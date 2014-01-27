@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/black" >
+    
+    <ProgressBar
+        android:id="@+id/feed_loading"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+    
+    <RelativeLayout
+        android:id="@+id/feed_offline"
+        android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:background="#ff1f1f1f"
+    	android:visibility="invisible" >
+    	<ImageView
+    	    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_centerInParent="true"
+		    android:src="@drawable/offline_bg_stars"
+		    android:scaleType="centerCrop" />
+    	<ImageButton
+    	    android:id="@+id/feed_offline_pic"
+    	    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerInParent="true"
+		    android:src="@drawable/offline_moon_sad"
+		    style="?android:attr/borderlessButtonStyle"
+        	android:background="@null" />
+        <TextView
+            android:id="@+id/feed_offline_text1"
+	        android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/feed_offline_pic"
+		    android:layout_centerHorizontal="true"
+		    android:text="No internet connection"
+		    android:textColor="@color/white"
+		    android:layout_marginTop="15dip"
+		    android:textSize="16sp"
+		    android:textStyle="bold" />
+        <TextView
+	        android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/feed_offline_text1"
+		    android:layout_centerHorizontal="true"
+		    android:text="Please try again later"
+		    android:textColor="@color/white"
+		    android:textSize="14sp" />
+    </RelativeLayout>
+    
+    
+    <com.km.backfront.ui.vertical.VerticalViewPager
+		android:id="@+id/pager"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_alignParentTop="true"
+		android:layout_above="@+id/menu" >
+	</com.km.backfront.ui.vertical.VerticalViewPager>
+    
+    <LinearLayout
+        android:id="@id/menu"
+	    android:layout_width="fill_parent"
+	    android:layout_height="60dp"
+	    android:orientation="horizontal"
+	    android:background="@color/dark_grey"
+	    android:layout_alignParentBottom="true" >
+    
+	    <ImageButton
+		    android:id="@+id/menu_feed_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_feed"
+		    android:contentDescription="@string/menu_feed"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    style="?android:attr/borderlessButtonStyle"
+		    android:background="@color/black" />
+	    
+	    <TextView
+	        android:layout_width="1px"
+		    android:layout_height="fill_parent"
+		    android:background="@color/light_grey" />
+	    
+	    <ImageButton 
+		    android:id="@+id/menu_add_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_camera"
+		    android:contentDescription="@string/menu_camera"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    style="?android:attr/borderlessButtonStyle"
+		    android:background="@color/dark_grey" />
+	    
+	    <TextView
+	        android:layout_width="1px"
+		    android:layout_height="fill_parent"
+		    android:background="@color/light_grey" />
+	    
+	    <ImageButton 
+		    android:id="@+id/menu_settings_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_profile_settings"
+		    android:contentDescription="@string/menu_settings"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    style="?android:attr/borderlessButtonStyle"
+		    android:background="@color/dark_grey" />
+	
+	</LinearLayout>
+    
+</RelativeLayout>

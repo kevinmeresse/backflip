@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/menu" >
+        <TableLayout
+	        android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+			<TableRow
+			    android:id="@+id/settings_profile"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_my_profile" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_profile" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_followers"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_user_follow" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_followers" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_following"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_user_follow" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_following" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content" >
+				<TextView
+				    android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+			        android:layout_span="2"
+			        android:text="@string/settings_general"
+			        android:textAllCaps="true"
+			        android:layout_marginLeft="15dp"
+			        android:layout_marginTop="15dp"
+			        android:layout_marginBottom="5dp" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_notifications"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_notification" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_notif" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_help"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_help" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_help" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_problem"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_problem" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_problem" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_rate"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_rate_app" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_rate" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<View style="@style/SettingsLine" />
+			<TableRow
+			    android:id="@+id/settings_logout"
+			    style="@style/SettingsTableRow"
+			    android:visibility="gone" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_logout" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_logout" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+			<TableRow
+			    android:id="@+id/settings_signup"
+			    style="@style/SettingsTableRow" >
+				<ImageView
+					style="@style/SettingsIcon"
+					android:src="@drawable/icon_logout" />
+			    <TextView
+			        style="@style/SettingsText"
+			        android:text="@string/settings_signup" />
+			    <ImageView
+					style="@style/SettingsArrow" />
+			</TableRow>
+		</TableLayout>
+	</ScrollView>
+    
+    
+    <LinearLayout
+        android:id="@id/menu"
+	    android:layout_width="fill_parent"
+	    android:layout_height="60dp"
+	    android:orientation="horizontal"
+	    android:background="@color/dark_grey"
+	    android:layout_alignParentBottom="true" >
+    
+	    <ImageButton
+		    android:id="@+id/menu_feed_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_feed"
+		    android:contentDescription="@string/menu_feed"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    android:background="@color/dark_grey" />
+	    
+	    <TextView
+	        android:layout_width="1px"
+		    android:layout_height="fill_parent"
+		    android:background="@color/light_grey" />
+	    
+	    <ImageButton 
+		    android:id="@+id/menu_add_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_camera"
+		    android:contentDescription="@string/menu_camera"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    android:background="@color/dark_grey" />
+	    
+	    <TextView
+	        android:layout_width="1px"
+		    android:layout_height="fill_parent"
+		    android:background="@color/light_grey" />
+	    
+	    <ImageButton 
+		    android:id="@+id/menu_settings_button"
+		    android:layout_width="0px"
+		    android:layout_height="fill_parent"
+		    android:src="@drawable/icon_profile_settings"
+		    android:contentDescription="@string/menu_settings"
+		    android:gravity="center"
+		    android:layout_weight="1"
+		    android:background="@color/black" />
+	
+	</LinearLayout>
+
+</RelativeLayout>

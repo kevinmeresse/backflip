@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="settings_profile">My profile</string>
+    <string name="settings_followers">They\'re following me</string>
+    <string name="settings_following">I\'m following them</string>
+    <string name="settings_notif">Manage notifications</string>
+    <string name="settings_help">Help!</string>
+    <string name="settings_problem">Report a problem</string>
+    <string name="settings_rate">Rate the app</string>
+    <string name="settings_logout">Log out</string>
+    <string name="settings_signup">Sign up</string>
+    <string name="settings_general">General</string>
+
+</resources>

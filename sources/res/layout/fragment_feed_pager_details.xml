@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <com.parse.ParseImageView
+        android:id="@+id/imageView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/imageview_description"
+        android:scaleType="centerCrop" />
+    
+    <ImageView
+        android:id="@+id/moment_drop_shadow"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="top"
+        android:src="@drawable/drop_shadow" />
+    
+    <ImageButton
+        android:id="@+id/moment_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_love"
+        android:layout_gravity="center"
+        android:contentDescription="@string/like_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:visibility="invisible" />
+    <TextView  
+        android:id="@+id/moment_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff000000"
+        android:textSize="12sp"
+        android:layout_gravity="center" />
+    
+    <ImageButton
+        android:id="@+id/moment_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_more"
+        android:layout_gravity="top|right"
+        android:contentDescription="@string/more_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:visibility="invisible" />
+    
+    <TableLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:padding="7dp"
+		android:layout_gravity="top|left" >
+    	<TableRow>
+		    <TextView  
+		        android:id="@+id/moment_author"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="#fff"
+		        android:textSize="15sp"
+		        android:textStyle="bold"
+		        android:shadowColor="@color/transparent_grey"
+		        android:shadowDx="0.5"
+		        android:shadowDy="1"
+		        android:shadowRadius="1.0"
+		        android:paddingBottom="4dp" />
+	    </TableRow>
+        <TableRow>
+		    <View
+				android:layout_height="1dp"
+				android:background="#44ffffff" />
+	    </TableRow>
+	    <TableRow>
+		    <TextView  
+		        android:id="@+id/moment_caption"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="#fff"
+		        android:textSize="12sp"
+		        android:shadowColor="@color/transparent_grey"
+		        android:shadowDx="0.5"
+		        android:shadowDy="1"
+		        android:shadowRadius="1.0"
+		        android:paddingTop="2dp"
+		        android:visibility="gone" />
+	    </TableRow>
+	    <TableRow>
+		    <TextView  
+		        android:id="@+id/moment_created"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="#eee"
+		        android:textSize="10sp"
+		        android:shadowColor="@color/transparent_grey"
+		        android:shadowDx="0.5"
+		        android:shadowDy="1"
+		        android:shadowRadius="1.0"
+		        android:paddingTop="2dp" />
+	    </TableRow>
+   	</TableLayout>
+
+</FrameLayout>

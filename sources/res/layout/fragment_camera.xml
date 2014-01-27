@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <com.km.backfront.ui.PreviewFrameLayout
+	    android:id="@+id/frame_layout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+    	<FrameLayout android:id="@+id/frame"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+		    <SurfaceView
+		        android:id="@+id/camera_preview"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent" />
+		</FrameLayout>
+	</com.km.backfront.ui.PreviewFrameLayout>
+	
+    
+    
+    <LinearLayout 
+        android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical"
+	    android:weightSum="2" >
+	    <ImageView
+	        android:id="@+id/preview_image_top"
+	        android:layout_width="fill_parent"
+	        android:layout_height="0px"
+	        android:scaleType="centerCrop"
+	        android:layout_gravity="top"
+	        android:layout_weight="1"
+	        android:background="@color/black"
+	        android:visibility="invisible"
+	        android:contentDescription="@string/preview_top_image_description" />
+	    <ImageView
+	        android:id="@+id/preview_image_bottom"
+	        android:layout_width="fill_parent"
+	        android:layout_height="0px"
+	        android:scaleType="centerCrop"
+	        android:layout_gravity="bottom"
+	        android:layout_weight="1"
+	        android:background="@color/black"
+	        android:visibility="visible"
+	        android:contentDescription="@string/preview_bottom_image_description" />
+	</LinearLayout>
+    
+    
+
+    <ImageButton
+        android:id="@+id/camera_photo_back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_camera_arrow_up"
+        android:contentDescription="@string/camera_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null" />
+    
+    <ImageButton
+        android:id="@+id/camera_photo_front_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_camera_arrow_down"
+        android:contentDescription="@string/camera_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:visibility="invisible" />
+    
+    <ImageButton
+        android:id="@+id/camera_validate_photo_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_check"
+        android:contentDescription="@string/accept_photo_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:visibility="invisible" />
+    
+    <ImageButton
+        android:id="@+id/camera_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:src="@drawable/icon_close"
+        android:contentDescription="@string/cancel_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:paddingLeft="7dp"
+        android:paddingTop="7dp" />
+    
+    <ImageButton
+        android:id="@+id/camera_flash_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:src="@drawable/icon_flash_disable"
+        android:contentDescription="@string/flash_button_description"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@null"
+        android:paddingRight="7dp"
+        android:paddingTop="7dp" />
+    
+    <ImageView
+        android:id="@+id/front_flash"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:visibility="invisible" />
+    
+</FrameLayout>

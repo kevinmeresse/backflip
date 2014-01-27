@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white" >
+    
+    <RelativeLayout
+        android:id="@+id/share_top_bar"
+	    android:layout_width="fill_parent"
+	    android:layout_height="50dp"
+	    android:background="@color/dark_grey" >
+	    <ImageButton
+			android:id="@+id/share_top_bar_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="left"
+			android:layout_centerVertical="true"
+			android:src="@drawable/icon_up_caret"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:background="@color/transparent"
+			android:contentDescription="@string/share_top_bar_title" />
+	    <Button
+	        android:id="@+id/share_top_bar_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/share_top_bar_icon"
+	        android:layout_centerVertical="true"
+	        android:textColor="@color/white"
+	        android:text="@string/share_top_bar_title"
+	        android:textStyle="bold"
+	        android:background="@color/transparent" />
+	    
+    </RelativeLayout>
+    
+    <ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/share_top_bar" >
+    
+    <RelativeLayout
+        android:id="@+id/share_content"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" >
+    
+    <ImageView
+		android:id="@+id/share_image_preview"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="top|left"
+		android:background="@color/black"
+		android:layout_margin="15dp" />
+    
+    <EditText
+        android:id="@+id/share_moment_caption"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_caption_placeholder"
+        android:textColorHint="@color/separator_grey"
+        android:textColor="@color/text_black"
+        android:inputType="textCapSentences"
+        android:layout_gravity="top"
+        android:layout_toRightOf="@id/share_image_preview"
+        android:background="@color/transparent"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp" />
+    
+    <TextView
+        android:id="@+id/share_line1"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_toRightOf="@id/share_image_preview"
+        android:layout_alignBottom="@id/share_image_preview"
+        android:background="@color/separator_grey"
+        android:layout_marginRight="15dp" />
+
+    <EditText
+        android:id="@+id/share_moment_location"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_location_placeholder"
+        android:textColorHint="@color/separator_grey"
+        android:textColor="@color/text_black"
+        android:inputType="textCapSentences"
+        android:background="@color/transparent"
+        android:drawableLeft="@drawable/icon_location"
+        android:layout_below="@id/share_image_preview"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+    
+    <TextView
+        android:id="@+id/share_line2"
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/share_moment_location"
+        android:background="@color/separator_grey"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+    
+    <TableLayout
+        android:id="@+id/share_social_table"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/share_line2"
+		android:layout_marginBottom="15dp" >
+		<TableRow
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+		    <ImageButton
+		        android:id="@+id/share_facebook_icon"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/facebook_gray"
+		        android:background="@drawable/cell_shape" />
+		    <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:text="@string/facebook_text"
+		        android:gravity="center"
+		        android:layout_weight="1"
+		        android:background="@drawable/cell_shape" />
+		    <ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/twitter_gray"
+		        android:background="@drawable/cell_shape" />
+		    <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:text="@string/twitter_text"
+		        android:gravity="center"
+		        android:layout_weight="1"
+		        android:background="@drawable/cell_shape" />
+		</TableRow>
+		<TableRow
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+		    <ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/instagram_gray"
+		        android:background="@drawable/cell_shape" />
+		    <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:text="@string/instagram_text"
+		        android:gravity="center"
+		        android:layout_weight="1"
+		        android:background="@drawable/cell_shape" />
+		    <ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/tumbr_gray"
+		        android:background="@drawable/cell_shape" />
+		    <TextView
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:text="@string/tumblr_text"
+		        android:gravity="center"
+		        android:layout_weight="1"
+		        android:background="@drawable/cell_shape" />
+		</TableRow>
+		
+    </TableLayout>
+    
+    <Button
+	    android:id="@+id/share_button"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/share_button_text"
+	    android:textColor="@color/white"
+	    android:contentDescription="@string/share_button"
+	    android:gravity="center"
+	    android:background="@color/blue"
+	    android:paddingTop="21dp"
+	    android:paddingBottom="21dp"
+	    android:layout_below="@id/share_social_table"
+	    android:layout_margin="15dp" />
+    
+    <Button
+	    android:id="@+id/share_save_image_button"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/share_save_image_button_text"
+	    android:textColor="@color/text_black"
+	    android:contentDescription="@string/share_save_image_button_text"
+	    android:gravity="center"
+	    android:background="@drawable/button_stroke_shape"
+	    android:paddingTop="21dp"
+	    android:paddingBottom="21dp"
+	    android:layout_below="@id/share_button"
+	    android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp" />
+    
+    <TextView
+	    android:id="@+id/share_save_image_disabled"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/share_save_image_button_text"
+	    android:textColor="@color/separator_grey"
+	    android:contentDescription="@string/share_save_image_button_text"
+	    android:gravity="center"
+	    android:background="@drawable/button_stroke_shape"
+	    android:paddingTop="21dp"
+	    android:paddingBottom="21dp"
+	    android:layout_below="@id/share_button"
+	    android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="invisible" />
+    
+    
+    </RelativeLayout>
+</ScrollView>
+
+	<FrameLayout
+        android:id="@+id/share_loading"
+        android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@color/transparent_black"
+	    android:visibility="invisible" >
+        <ProgressBar
+	        style="?android:attr/progressBarStyleLarge"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center" />
+    </FrameLayout>
+</RelativeLayout>

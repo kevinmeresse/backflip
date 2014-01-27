@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="dark_grey">#2d2d2d</color>
+    <color name="light_grey">#424242</color>
+    <color name="separator_grey">#ffcccccc</color>
+    <color name="transparent_grey">#7F000000</color>
+    <color name="blue">#008bed</color>
+    <color name="transparent_black">#66000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="blue_sky">#ff3ea9f4</color>
+    <color name="blue_sea">#ff1984cf</color>
+    <color name="white_sand">#fffbf2ee</color>
+    <color name="signup_line">#33ffffff</color>
+    <color name="text_black">#ff333333</color>
+</resources>
