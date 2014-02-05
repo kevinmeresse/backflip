@@ -1,15 +1,21 @@
 package com.km.backfront.util;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class Utils {
+	protected static final String TAG = "Utils";
+
 	public static String getTimeFromDateToNow(Date date) {
 		Date now = new Date();
 		long diffInMin = (now.getTime() - date.getTime()) / 60000;
@@ -73,8 +79,36 @@ public class Utils {
 		}
 	  
 	  public static boolean isValidEmailAddress(String email) {
-	       Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
-	       Matcher m = p.matcher(email);
-	       return m.matches();
-	}
+		  Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+		  Matcher m = p.matcher(email);
+		  return m.matches();
+	  }
+	  
+	  public static boolean isSubsetOf(Collection<String> subset, Collection<String> superset) {
+		  for (String string : subset) {
+			  if (!superset.contains(string)) {
+				  return false;
+			  }
+		  }
+		  return true;
+	  }
+	  
+	  public static void showToast(final Activity activity, final String message) {
+		  activity.runOnUiThread(new Runnable() {
+	          public void run() {
+	        	  try {
+	        		  Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+	        	  } catch (Exception e) {
+	        		  Log.i(TAG, "Failed to display a toast message: "+message);
+                  }
+	          }
+	      });
+	  }
+	  
+	  public static boolean isEmptyString(String text) {
+		  if (text != null && !text.isEmpty()) {
+			  return false;
+		  }
+		  return true;
+	  }
 }

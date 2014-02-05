@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import com.km.backfront.R;
@@ -102,13 +103,21 @@ public class SignUpActivity extends Activity {
         dlg.setMessage("Signing up.  Please wait.");
         dlg.show();
 
+        ParseUser currentUser = ParseUser.getCurrentUser();
+    	try {
+			currentUser.save();
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
         // Set up a new Parse user
-        ParseUser user = new ParseUser();
-        user.setUsername(usernameView.getText().toString());
-        user.setPassword(passwordView.getText().toString());
-        user.setEmail(emailView.getText().toString());
+        //ParseUser user = new ParseUser();
+    	currentUser.setUsername(usernameView.getText().toString());
+        currentUser.setPassword(passwordView.getText().toString());
+        currentUser.setEmail(emailView.getText().toString());
         // Call the Parse signup method
-        user.signUpInBackground(new SignUpCallback() {
+        currentUser.saveInBackground(new SaveCallback() {
 
           @Override
           public void done(ParseException e) {

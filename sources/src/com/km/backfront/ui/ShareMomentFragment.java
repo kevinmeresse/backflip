@@ -1,32 +1,31 @@
 package com.km.backfront.ui;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import com.km.backfront.album.BaseAlbumDirFactory;
-import com.km.backfront.album.FroyoAlbumDirFactory;
-import com.km.backfront.album.AlbumStorageDirFactory;
 import com.km.backfront.R;
 import com.km.backfront.model.Moment;
 import com.km.backfront.util.BitmapHelper;
+import com.km.backfront.util.PostPhotoOnFacebookRunnable;
 import com.km.backfront.util.Utils;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import com.facebook.*;
+import com.facebook.Session.NewPermissionsRequest;
+import com.facebook.model.*;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -38,7 +37,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ShareMomentFragment extends Fragment {
 	
@@ -55,6 +53,10 @@ public class ShareMomentFragment extends Fragment {
 	private Button topBarTextButton;
 	private FrameLayout shareLoading;
 	private ImageButton shareFacebookIcon;
+	private TextView shareFacebookText;
+	
+	private boolean shareOnFacebook = false;
+	private boolean shareOnTwitter = false;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,6 +76,7 @@ public class ShareMomentFragment extends Fragment {
     	topBarTextButton = (Button) v.findViewById(R.id.share_top_bar_text);
     	shareLoading = (FrameLayout) v.findViewById(R.id.share_loading);
     	shareFacebookIcon = (ImageButton) v.findViewById(R.id.share_facebook_icon);
+    	shareFacebookText = (TextView) v.findViewById(R.id.share_facebook_text);
     	
     	// Set the preview image
     	Bitmap momentImageScaled = BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 200);
@@ -84,10 +87,7 @@ public class ShareMomentFragment extends Fragment {
 		    public void onClick(View v) {
 		    	// Check if Internet connection
 		    	if (!Utils.hasConnection((NewMomentActivity) getActivity())) {
-		    		Toast.makeText(
-							getActivity().getApplicationContext(),
-							"No internet connection...",
-							Toast.LENGTH_SHORT).show();
+		    		Utils.showToast(getActivity(), "No internet connection...");
 		    	} else {
 		    		// Check if user is anonymous
 		    		ParseUser currentUser = ParseUser.getCurrentUser();
@@ -123,15 +123,9 @@ public class ShareMomentFragment extends Fragment {
 		    	try {
 					Bitmap momentImage = ((NewMomentActivity) getActivity()).getCurrentPhoto();
 		    		BitmapHelper.saveImageInGallery(getActivity(), momentImage);
-					Toast.makeText(
-						getActivity().getApplicationContext(),
-						"Picture successfully saved",
-						Toast.LENGTH_SHORT).show();
+					Utils.showToast(getActivity(), "Picture successfully saved");
 				} catch (Exception e) {
-					Toast.makeText(
-						getActivity().getApplicationContext(),
-						"Sorry, picture could not be saved...",
-						Toast.LENGTH_SHORT).show();
+					Utils.showToast(getActivity(), "Sorry, picture could not be saved...");
 					shareSaveImageButton.setVisibility(View.VISIBLE);
 			    	shareSaveImageDisabled.setVisibility(View.INVISIBLE);
 					e.printStackTrace();
@@ -142,30 +136,106 @@ public class ShareMomentFragment extends Fragment {
     	// Action: click on Facebook
     	shareFacebookIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	Log.d(TAG, "Clicked on Share on Facebook.");
-		    	ParseUser currentUser = ParseUser.getCurrentUser();
-		    	if (!ParseFacebookUtils.isLinked(currentUser)) {
-		    		Log.d(TAG, "Connecting to Facebook...");
-		    		ParseFacebookUtils.link(currentUser, getActivity(), FACEBOOK_ACTIVITY_CODE, new SaveCallback() {
-		    			@Override
-		    		    public void done(ParseException ex) {
-		    				if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
-		    					Log.d(TAG, "Woohoo, user logged in with Facebook!");
-		    				} else {
-		    					Log.d(TAG, "Aaarggh, NOT logged in with Facebook:"+ex.getMessage());
-		    				}
-		    		    }
-		    		});
-	    		} else {
-	    			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
-	    		}
+		    	toggleFacebookShare(shareOnFacebook);
+		    	if (shareOnFacebook) loginOnFacebook();
+		    }
+    	});
+    	shareFacebookText.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	toggleFacebookShare(shareOnFacebook);
+		    	if (shareOnFacebook) loginOnFacebook();
 		    }
     	});
     	
     	return v;
 	}
 	
+	private void toggleFacebookShare(boolean isCurrentlyActivated) {
+		if (!isCurrentlyActivated) {
+			shareOnFacebook = true;
+			shareFacebookIcon.setImageDrawable(getResources().getDrawable(R.drawable.facebook_color));
+			shareFacebookText.setTextColor(getResources().getColor(R.color.text_black));
+		} else {
+			shareOnFacebook = false;
+			shareFacebookIcon.setImageDrawable(getResources().getDrawable(R.drawable.facebook_gray));
+			shareFacebookText.setTextColor(getResources().getColor(R.color.separator_grey));
+		}
+	}
+	
+	private void loginOnFacebook() {
+		Log.d(TAG, "Clicked on Share on Facebook.");
+    	ParseUser currentUser = ParseUser.getCurrentUser();
+    	try {
+			currentUser.save();
+	    	if (!ParseFacebookUtils.isLinked(currentUser)) {
+	    		Log.d(TAG, "Connecting to Facebook...");
+	    		ParseFacebookUtils.link(currentUser, getActivity(), FACEBOOK_ACTIVITY_CODE, new SaveCallback() {
+	    			@Override
+	    		    public void done(ParseException ex) {
+	    				if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+	    					getFacebookIdInBackground();
+	    					// Request permission to post on Facebook
+	    					ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest(getActivity(), Arrays.asList(Permissions.Extended.PUBLISH_STREAM, Permissions.User.PHOTOS)));
+	    					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
+	    					Log.d(TAG, "Woohoo, user logged in with Facebook!");
+	    				} else {
+	    					Log.d(TAG, "Aaarggh, NOT logged in with Facebook:"+ex.getMessage());
+	    					toggleFacebookShare(shareOnFacebook);
+	    				}
+	    		    }
+	    		});
+    		} else {
+    			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
+    		}
+    	} catch (ParseException e) {
+			e.printStackTrace();
+			toggleFacebookShare(shareOnFacebook);
+		}
+	}
+	
+	private static void getFacebookIdInBackground() {
+		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
+			@Override
+			public void onCompleted(GraphUser user, Response response) {
+				if (user != null) {
+					ParseUser.getCurrentUser().put("facebookId", user.getId());
+					ParseUser.getCurrentUser().saveInBackground();
+				}
+			}
+		}).executeAsync();
+	}
+	
+	private static void getFriendsInBackground() {
+		Request.newMyFriendsRequest(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
+
+			  @Override
+			  public void onCompleted(List<GraphUser> users, Response response) {
+			    if (users != null) {
+			      List<String> friendsList = new ArrayList<String>();
+			      for (GraphUser user : users) {
+			        friendsList.add(user.getId());
+			      }
+
+			      // Construct a ParseUser query that will find friends whose
+			      // facebook IDs are contained in the current user's friend list.
+			      ParseQuery<ParseUser> friendQuery = ParseUser.getQuery();
+			      friendQuery.whereContainedIn("facebookId", friendsList);
+
+			      // findObjects will return a list of ParseUsers that are friends with
+			      // the current user
+			      try {
+					List<ParseUser> friendUsers = friendQuery.find();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    }
+			  }
+			}).executeAsync();
+	}
+	
 	public void shareMoment() {
+		Log.d(TAG, "Sharing moment on Backfront...");
 		// Display the loading bar
     	shareLoading.setVisibility(View.VISIBLE);
     	// Retrieve the current photo from activity
@@ -181,17 +251,30 @@ public class ShareMomentFragment extends Fragment {
 			public void done(ParseException e) {
 				if (e != null) {
 					shareLoading.setVisibility(View.INVISIBLE);
-					Toast.makeText(getActivity().getApplicationContext(),
-							"Error saving: " + e.getMessage(),
-							Toast.LENGTH_LONG).show();
+					Log.e(TAG, "Error when saving picture to Parse: " + e.getMessage());
+					Utils.showToast(getActivity(), "Error when saving picture on the server... Please try again shortly!");
 				} else {
-					createMomentAndReturn();
+					Log.d(TAG, "Finished saving picture to Parse. URL: "+photoFile.getUrl());
+					Moment moment = createMomentAndReturn();
+					publishOnSocialNetworks(photoFile.getUrl(), moment.getCaption(), moment.getLocationDescription());
 				}
 			}
 		});
 	}
 	
-	public void createMomentAndReturn() {
+	public void publishOnSocialNetworks(String photoUrl, String photoCaption, String photoLocation) {
+		String fullCaption = photoCaption;
+		if (!Utils.isEmptyString(photoLocation)) {
+			fullCaption += " - From "+photoLocation;
+		}
+		if (shareOnFacebook) {
+			Log.d(TAG, "Sharing moment on Facebook...");
+			Thread thread = new Thread(new PostPhotoOnFacebookRunnable(getActivity(), photoUrl, fullCaption));
+	        thread.start();
+		}
+	}
+	
+	public Moment createMomentAndReturn() {
 		Moment moment = new Moment();
 		// Add data to the moment object:
 		moment.setPhotoFile(photoFile);
@@ -211,32 +294,28 @@ public class ShareMomentFragment extends Fragment {
 					getActivity().setResult(Activity.RESULT_OK);
 					getActivity().finish();
 				} else {
-					Toast.makeText(
-							getActivity().getApplicationContext(),
-							"Error saving: " + e.getMessage(),
-							Toast.LENGTH_SHORT).show();
+					Log.e(TAG, "Error when saving moment to Parse: " + e.getMessage());
+					Utils.showToast(getActivity(), "Error when saving moment on the server... Please try again shortly!");
 				}
 			}
 
 		});
+		return moment;
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "On activity result... Request code: "+requestCode);
+		Log.d(TAG, "On activity result... Result code: "+resultCode);
 		if (resultCode == Activity.RESULT_OK) {
 			ParseUser currentUser = ParseUser.getCurrentUser();
 			if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
-    			shareMoment();
+				shareMoment();
 			} else {
-				Toast.makeText(getActivity().getApplicationContext(),
-						"We couldn't sign you in...",
-						Toast.LENGTH_LONG).show();
+				Utils.showToast(getActivity(), "We couldn't sign you in...");
 			}
-		} else if (resultCode == FACEBOOK_ACTIVITY_CODE) {
+		}/* else if (resultCode == FACEBOOK_ACTIVITY_CODE) {
 			Log.d(TAG, "Finishing Facebook authentication....");
 			ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
-		}
-		//super.onActivityResult(requestCode, resultCode, data);
+		}*/
 	}
 }

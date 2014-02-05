@@ -1,22 +1,19 @@
 package com.km.backfront.ui;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
-import android.view.WindowManager;
-
+import android.util.Log;
 import com.km.backfront.R;
-import com.km.backfront.util.BitmapHelper;
+import com.parse.ParseFacebookUtils;
 
 public class NewMomentActivity extends FragmentActivity {
 	
+	private static final String TAG = "NewMomentActivity";
 	private Bitmap currentPhoto = null;
-	//private Bitmap photoBack = null;
-	//private Bitmap photoFront = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,17 +23,6 @@ public class NewMomentActivity extends FragmentActivity {
 		
 		// Set the layout
 		setContentView(R.layout.activity_new_moment);
-		
-		// Make this activity fullscreen
-		/*if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-        	View decorView = getWindow().getDecorView();
-        	// Hide the status bar.
-        	int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        	decorView.setSystemUiVisibility(uiOptions);
-        }*/
 		
 		FragmentManager manager = getSupportFragmentManager();
 		Fragment fragment = manager.findFragmentById(R.id.newMomentContainer);
@@ -56,23 +42,16 @@ public class NewMomentActivity extends FragmentActivity {
 		currentPhoto = photo;
 	}
 	
-	/*public Bitmap getPhotoBack() {
-		return photoBack;
-	}
 	
-	public void setPhotoBack(Bitmap photo) {
-		photoBack = photo;
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.d(TAG, "On activity result... Result code: "+resultCode);
+		super.onActivityResult(requestCode, resultCode, data);
+	    try {
+	    	Log.d(TAG, "Finishing Facebook authentication....");
+			ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
+		} catch (Exception e) {
+			Log.e(TAG, "Error: Couldn't finish Facebook authentication.");
+		}
 	}
-	
-	public Bitmap getPhotoFront() {
-		return photoFront;
-	}
-	
-	public void setPhotoFront(Bitmap photo) {
-		photoFront = photo;
-	}
-	
-	public void mergePhotos() {
-		currentPhoto = BitmapHelper.mergeImages(photoBack, photoFront);
-	}*/
 }

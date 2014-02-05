@@ -117,9 +117,11 @@
 				android:src="@drawable/facebook_gray"
 		        android:background="@drawable/cell_shape" />
 		    <TextView
+		        android:id="@+id/share_facebook_text"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/facebook_text"
+		        android:textColor="@color/separator_grey"
 		        android:gravity="center"
 		        android:layout_weight="1"
 		        android:background="@drawable/cell_shape" />
@@ -132,6 +134,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/twitter_text"
+		        android:textColor="@color/separator_grey"
 		        android:gravity="center"
 		        android:layout_weight="1"
 		        android:background="@drawable/cell_shape" />
@@ -148,6 +151,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/instagram_text"
+		        android:textColor="@color/separator_grey"
 		        android:gravity="center"
 		        android:layout_weight="1"
 		        android:background="@drawable/cell_shape" />
@@ -160,6 +164,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/tumblr_text"
+		        android:textColor="@color/separator_grey"
 		        android:gravity="center"
 		        android:layout_weight="1"
 		        android:background="@drawable/cell_shape" />
