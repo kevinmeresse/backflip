@@ -9,12 +9,14 @@ import com.km.backfront.R;
 import com.km.backfront.model.Moment;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.PostPhotoOnFacebookRunnable;
+import com.km.backfront.util.PostPhotoOnTwitterRunnable;
 import com.km.backfront.util.Utils;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -54,6 +56,8 @@ public class ShareMomentFragment extends Fragment {
 	private FrameLayout shareLoading;
 	private ImageButton shareFacebookIcon;
 	private TextView shareFacebookText;
+	private ImageButton shareTwitterIcon;
+	private TextView shareTwitterText;
 	
 	private boolean shareOnFacebook = false;
 	private boolean shareOnTwitter = false;
@@ -77,6 +81,8 @@ public class ShareMomentFragment extends Fragment {
     	shareLoading = (FrameLayout) v.findViewById(R.id.share_loading);
     	shareFacebookIcon = (ImageButton) v.findViewById(R.id.share_facebook_icon);
     	shareFacebookText = (TextView) v.findViewById(R.id.share_facebook_text);
+    	shareTwitterIcon = (ImageButton) v.findViewById(R.id.share_twitter_icon);
+    	shareTwitterText = (TextView) v.findViewById(R.id.share_twitter_text);
     	
     	// Set the preview image
     	Bitmap momentImageScaled = BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 200);
@@ -147,6 +153,20 @@ public class ShareMomentFragment extends Fragment {
 		    }
     	});
     	
+    	// Action: click on Twitter
+    	shareTwitterIcon.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	toggleTwitterShare(shareOnTwitter);
+		    	if (shareOnTwitter) loginOnTwitter();
+		    }
+    	});
+    	shareTwitterText.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	toggleTwitterShare(shareOnTwitter);
+		    	if (shareOnTwitter) loginOnTwitter();
+		    }
+    	});
+    	
     	return v;
 	}
 	
@@ -159,6 +179,18 @@ public class ShareMomentFragment extends Fragment {
 			shareOnFacebook = false;
 			shareFacebookIcon.setImageDrawable(getResources().getDrawable(R.drawable.facebook_gray));
 			shareFacebookText.setTextColor(getResources().getColor(R.color.separator_grey));
+		}
+	}
+	
+	private void toggleTwitterShare(boolean isCurrentlyActivated) {
+		if (!isCurrentlyActivated) {
+			shareOnTwitter = true;
+			shareTwitterIcon.setImageDrawable(getResources().getDrawable(R.drawable.twitter_color));
+			shareTwitterText.setTextColor(getResources().getColor(R.color.text_black));
+		} else {
+			shareOnTwitter = false;
+			shareTwitterIcon.setImageDrawable(getResources().getDrawable(R.drawable.twitter_gray));
+			shareTwitterText.setTextColor(getResources().getColor(R.color.separator_grey));
 		}
 	}
 	
@@ -193,6 +225,34 @@ public class ShareMomentFragment extends Fragment {
 		}
 	}
 	
+	private void loginOnTwitter() {
+		Log.d(TAG, "Clicked on Share on Twitter.");
+    	ParseUser currentUser = ParseUser.getCurrentUser();
+    	try {
+			currentUser.save();
+			if (!ParseTwitterUtils.isLinked(currentUser)) {
+	    		Log.d(TAG, "Connecting to Twitter...");
+	    		ParseTwitterUtils.link(currentUser, getActivity(), new SaveCallback() {
+	    			@Override
+	    		    public void done(ParseException ex) {
+	    				if (ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())) {
+	    					Log.d(TAG, "Woohoo, user logged in with Twitter!");
+	    					getTwitterId();
+	    				} else {
+	    					Log.d(TAG, "Aaarggh, NOT logged in with Twitter:"+ex.getMessage());
+	    					toggleTwitterShare(shareOnTwitter);
+	    				}
+	    		    }
+	    		});
+    		} else {
+    			Log.d(TAG, "Good news, the user is already linked to a Twitter account.");
+    		}
+    	} catch (ParseException e) {
+			e.printStackTrace();
+			toggleTwitterShare(shareOnTwitter);
+		}
+	}
+	
 	private static void getFacebookIdInBackground() {
 		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
 			@Override
@@ -203,6 +263,14 @@ public class ShareMomentFragment extends Fragment {
 				}
 			}
 		}).executeAsync();
+	}
+	
+	private static void getTwitterId() {
+		String userId = ParseTwitterUtils.getTwitter().getUserId();
+		if (!Utils.isEmptyString(userId)) {
+			ParseUser.getCurrentUser().put("twitterId", userId);
+			ParseUser.getCurrentUser().saveInBackground();
+		}
 	}
 	
 	private static void getFriendsInBackground() {
@@ -256,20 +324,30 @@ public class ShareMomentFragment extends Fragment {
 				} else {
 					Log.d(TAG, "Finished saving picture to Parse. URL: "+photoFile.getUrl());
 					Moment moment = createMomentAndReturn();
-					publishOnSocialNetworks(photoFile.getUrl(), moment.getCaption(), moment.getLocationDescription());
+					if (moment != null) {
+						publishOnSocialNetworksInBackground(moment);
+						// Finish this activity and go back to the main activity
+						getActivity().setResult(Activity.RESULT_OK);
+						getActivity().finish();
+					}
 				}
 			}
 		});
 	}
 	
-	public void publishOnSocialNetworks(String photoUrl, String photoCaption, String photoLocation) {
-		String fullCaption = photoCaption;
-		if (!Utils.isEmptyString(photoLocation)) {
-			fullCaption += " - From "+photoLocation;
+	public void publishOnSocialNetworksInBackground(Moment moment) {
+		String fullCaption = moment.getCaption();
+		if (!Utils.isEmptyString(moment.getLocationDescription())) {
+			fullCaption += " - From "+moment.getLocationDescription();
 		}
 		if (shareOnFacebook) {
 			Log.d(TAG, "Sharing moment on Facebook...");
-			Thread thread = new Thread(new PostPhotoOnFacebookRunnable(getActivity(), photoUrl, fullCaption));
+			Thread thread = new Thread(new PostPhotoOnFacebookRunnable(getActivity(), photoFile.getUrl(), fullCaption));
+	        thread.start();
+		}
+		if (shareOnTwitter && !Utils.isEmptyString(moment.getObjectId())) {
+			Log.d(TAG, "Sharing moment on Twitter...");
+			Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
 	        thread.start();
 		}
 	}
@@ -286,20 +364,23 @@ public class ShareMomentFragment extends Fragment {
 		moment.setIsFavorite(false);
 		
 		// Save the moment to Parse
-		moment.saveInBackground(new SaveCallback() {
-
-			@Override
-			public void done(ParseException e) {
-				if (e == null) {
-					getActivity().setResult(Activity.RESULT_OK);
-					getActivity().finish();
-				} else {
-					Log.e(TAG, "Error when saving moment to Parse: " + e.getMessage());
-					Utils.showToast(getActivity(), "Error when saving moment on the server... Please try again shortly!");
-				}
-			}
-
-		});
+		try {
+			moment.save();
+		} catch (ParseException e) {
+			Log.e(TAG, "Error when saving moment to Parse: " + e.getMessage());
+			e.printStackTrace();
+			Utils.showToast(getActivity(), "Error when saving moment on the server... Please try again shortly!");
+			return null;
+		}
+		
+		// Update moment with latest info from Parse (ObjectId)
+		try {
+			moment.fetch();
+		} catch (ParseException e) {
+			Log.e(TAG, "Couldn't fetch moment from Parse: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
 		return moment;
 	}
 	

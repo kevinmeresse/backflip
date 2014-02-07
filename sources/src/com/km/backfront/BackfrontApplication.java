@@ -9,6 +9,7 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
+import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 
 public class BackfrontApplication extends Application {
@@ -29,6 +30,7 @@ public class BackfrontApplication extends Application {
 		 */
 		Parse.initialize(this, "ZvtTmUReSlI8EzAK6pJ7zalVxLjTAw5ehzyJPBnc", "o6p2Iyv3L7BtSgYJVhlnH1oiBLgmLYTq8BLAfNS4");
 		ParseFacebookUtils.initialize("198320220368270");
+		ParseTwitterUtils.initialize("ccGg382Q7O8A6YmK3T27Q", "mnL7vbiajkrYRGfTso6sESdvlttPJVZ77iZkuvJG2hk");
 
 		/*
 		 * This app lets an anonymous user create and save photos of meals
