@@ -8,7 +8,9 @@ import java.util.List;
 import com.km.backfront.R;
 import com.km.backfront.model.Moment;
 import com.km.backfront.util.BitmapHelper;
+import com.km.backfront.util.CacheManager;
 import com.km.backfront.util.PostPhotoOnFacebookRunnable;
+import com.km.backfront.util.PostPhotoOnInstagramRunnable;
 import com.km.backfront.util.PostPhotoOnTwitterRunnable;
 import com.km.backfront.util.Utils;
 import com.parse.ParseException;
@@ -58,9 +60,12 @@ public class ShareMomentFragment extends Fragment {
 	private TextView shareFacebookText;
 	private ImageButton shareTwitterIcon;
 	private TextView shareTwitterText;
+	private ImageButton shareInstagramIcon;
+	private TextView shareInstagramText;
 	
 	private boolean shareOnFacebook = false;
 	private boolean shareOnTwitter = false;
+	private boolean shareOnInstagram = false;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,10 +88,15 @@ public class ShareMomentFragment extends Fragment {
     	shareFacebookText = (TextView) v.findViewById(R.id.share_facebook_text);
     	shareTwitterIcon = (ImageButton) v.findViewById(R.id.share_twitter_icon);
     	shareTwitterText = (TextView) v.findViewById(R.id.share_twitter_text);
+    	shareInstagramIcon = (ImageButton) v.findViewById(R.id.share_instagram_icon);
+    	shareInstagramText = (TextView) v.findViewById(R.id.share_instagram_text);
     	
     	// Set the preview image
     	Bitmap momentImageScaled = BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 200);
     	momentPreview.setImageBitmap(momentImageScaled);
+    	
+    	// Save the image in cache
+    	CacheManager.cachePicture(getActivity(), BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 800), "full.jpg", Bitmap.CompressFormat.JPEG);
     	
     	// Action: click on share
     	shareButton.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +177,18 @@ public class ShareMomentFragment extends Fragment {
 		    }
     	});
     	
+    	// Action: click on Instagram
+    	shareInstagramIcon.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	toggleInstagramShare(shareOnInstagram);
+		    }
+    	});
+    	shareInstagramText.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	toggleInstagramShare(shareOnInstagram);
+		    }
+    	});
+    	
     	return v;
 	}
 	
@@ -191,6 +213,18 @@ public class ShareMomentFragment extends Fragment {
 			shareOnTwitter = false;
 			shareTwitterIcon.setImageDrawable(getResources().getDrawable(R.drawable.twitter_gray));
 			shareTwitterText.setTextColor(getResources().getColor(R.color.separator_grey));
+		}
+	}
+	
+	private void toggleInstagramShare(boolean isCurrentlyActivated) {
+		if (!isCurrentlyActivated) {
+			shareOnInstagram = true;
+			shareInstagramIcon.setImageDrawable(getResources().getDrawable(R.drawable.instagram_color));
+			shareInstagramText.setTextColor(getResources().getColor(R.color.text_black));
+		} else {
+			shareOnInstagram = false;
+			shareInstagramIcon.setImageDrawable(getResources().getDrawable(R.drawable.instagram_gray));
+			shareInstagramText.setTextColor(getResources().getColor(R.color.separator_grey));
 		}
 	}
 	
@@ -348,6 +382,11 @@ public class ShareMomentFragment extends Fragment {
 		if (shareOnTwitter && !Utils.isEmptyString(moment.getObjectId())) {
 			Log.d(TAG, "Sharing moment on Twitter...");
 			Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
+	        thread.start();
+		}
+		if (shareOnInstagram) {
+			Log.d(TAG, "Sharing moment on Instagram...");
+			Thread thread = new Thread(new PostPhotoOnInstagramRunnable(getActivity()));
 	        thread.start();
 		}
 	}

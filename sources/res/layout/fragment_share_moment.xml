@@ -145,11 +145,13 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" >
 		    <ImageButton
+				android:id="@+id/share_instagram_icon"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:src="@drawable/instagram_gray"
 		        android:background="@drawable/cell_shape" />
 		    <TextView
+		        android:id="@+id/share_instagram_text"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/instagram_text"
@@ -158,11 +160,13 @@
 		        android:layout_weight="1"
 		        android:background="@drawable/cell_shape" />
 		    <ImageButton
+				android:id="@+id/share_path_icon"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:src="@drawable/tumbr_gray"
 		        android:background="@drawable/cell_shape" />
 		    <TextView
+		        android:id="@+id/share_path_text"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:text="@string/tumblr_text"
