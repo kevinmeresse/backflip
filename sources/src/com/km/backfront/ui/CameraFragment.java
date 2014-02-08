@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.km.backfront.R;
 import com.km.backfront.util.BitmapHelper;
+import com.km.backfront.util.CacheManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -93,20 +94,13 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
 	private Bitmap photoBack = null;
 	private Bitmap photoFront = null;
 	
-	private String cacheFolder;
-
-    @Override
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
 
-        // Retrieve the path to the cache folder
-        cacheFolder = ((NewMomentActivity) getActivity()).getCacheDir().getAbsolutePath();
-        // And delete the potential old cached pictures
-        File oldBackPic = new File(cacheFolder+"/back.png");
-        oldBackPic.delete();
-        File oldFrontPic = new File(cacheFolder+"/front.png");
-        oldFrontPic.delete();
+        // Delete the potential old cached pictures
+        CacheManager.cleanAll(getActivity());
         
         // Discover and assign back and front cameras ids
         discoverCameras();
@@ -241,18 +235,12 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
 						} else {
 							degrees = 270;
 						}
-						photoBack = BitmapHelper.cropImageTop(BitmapHelper.makeBitmap3(data, 600, degrees));
+						photoBack = BitmapHelper.cropImageTop(BitmapHelper.makeBitmap3(data, 612, degrees));
 						photoBackPreview.setImageBitmap(photoBack);
 						photoBackPreview.setVisibility(View.VISIBLE);
 						
 						// Save picture in cache
-						FileOutputStream out;
-						try {
-							out = new FileOutputStream(cacheFolder + "/back.png");
-							photoBack.compress(Bitmap.CompressFormat.PNG, 100, out);
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						}
+						CacheManager.cachePicture(getActivity(), photoBack, "back.png", Bitmap.CompressFormat.PNG);
 						
 						// Display the right button for next step
 						if (photoFront == null) {
@@ -299,18 +287,12 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
 						} else {
 							degrees = 270;
 						}
-						photoFront = BitmapHelper.cropImageBottom(BitmapHelper.makeBitmap3(data, 600, degrees));
+						photoFront = BitmapHelper.cropImageBottom(BitmapHelper.makeBitmap3(data, 612, degrees));
 						photoFrontPreview.setImageBitmap(photoFront);
 						photoFrontPreview.setVisibility(View.VISIBLE);
 						
 						// Save picture in cache
-						FileOutputStream out;
-						try {
-							out = new FileOutputStream(cacheFolder + "/front.png");
-							photoFront.compress(Bitmap.CompressFormat.PNG, 100, out);
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						}
+						CacheManager.cachePicture(getActivity(), photoFront, "front.png", Bitmap.CompressFormat.PNG);
 						
 						// Display the right button for next step
 						photoValidateButton.setVisibility(View.VISIBLE);
@@ -382,7 +364,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
     	if (frontPictureTaken) {
     		if (photoFront == null || photoFront.isRecycled()) {
     			// Get photo from cache disk
-    			photoFront = BitmapFactory.decodeFile(cacheFolder + "/front.png");
+    			photoFront = CacheManager.retrievePicture(getActivity(), "front.png");
     		}
     		if (photoFront != null) {
     			photoFrontPreview.setImageBitmap(photoFront);
@@ -400,7 +382,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
     	if (backPictureTaken) {
     		if (photoBack == null || photoBack.isRecycled()) {
     			// Get photo from cache disk
-    			photoBack = BitmapFactory.decodeFile(cacheFolder + "/back.png");
+    			photoBack = CacheManager.retrievePicture(getActivity(), "back.png");
     		}
     		if (photoBack != null) {
     			photoBackPreview.setImageBitmap(photoBack);
@@ -857,5 +839,11 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
         // Save the current state of pictures
         outState.putBoolean(ARG_BACK_PIC_TAKEN, backPictureTaken);
         outState.putBoolean(ARG_FRONT_PIC_TAKEN, frontPictureTaken);
+    }
+    
+    @Override
+    public void onDestroy() {
+    	
+    	super.onDestroy();
     }
 }
