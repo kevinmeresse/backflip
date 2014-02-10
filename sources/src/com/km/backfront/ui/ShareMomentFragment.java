@@ -1,34 +1,27 @@
 package com.km.backfront.ui;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-
 import com.km.backfront.R;
 import com.km.backfront.model.Moment;
 import com.km.backfront.util.BackflipException;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.CacheManager;
-import com.km.backfront.util.PostPhotoOnFacebookRunnable;
 import com.km.backfront.util.PostPhotoOnInstagramRunnable;
-import com.km.backfront.util.PostPhotoOnTwitterRunnable;
 import com.km.backfront.util.PublishCallback;
 import com.km.backfront.util.Utils;
+import com.km.backfront.util.facebook.FacebookUtils;
 import com.km.backfront.util.path.PathUtils;
+import com.km.backfront.util.twitter.TwitterUtils;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils.Permissions;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
-import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
-import com.facebook.model.*;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -164,13 +157,11 @@ public class ShareMomentFragment extends Fragment {
     	shareFacebookIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	toggleFacebookShare(shareOnFacebook);
-		    	if (shareOnFacebook) loginOnFacebook();
 		    }
     	});
     	shareFacebookText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	toggleFacebookShare(shareOnFacebook);
-		    	if (shareOnFacebook) loginOnFacebook();
 		    }
     	});
     	
@@ -178,13 +169,11 @@ public class ShareMomentFragment extends Fragment {
     	shareTwitterIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	toggleTwitterShare(shareOnTwitter);
-		    	if (shareOnTwitter) loginOnTwitter();
 		    }
     	});
     	shareTwitterText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	toggleTwitterShare(shareOnTwitter);
-		    	if (shareOnTwitter) loginOnTwitter();
 		    }
     	});
     	
@@ -204,13 +193,11 @@ public class ShareMomentFragment extends Fragment {
     	sharePathIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	togglePathShare(shareOnPath);
-		    	if (shareOnPath) loginOnPath();
 		    }
     	});
     	sharePathText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	togglePathShare(shareOnPath);
-		    	if (shareOnPath) loginOnPath();
 		    }
     	});
     	
@@ -222,6 +209,28 @@ public class ShareMomentFragment extends Fragment {
 			shareOnFacebook = true;
 			shareFacebookIcon.setImageDrawable(getResources().getDrawable(R.drawable.facebook_color));
 			shareFacebookText.setTextColor(getResources().getColor(R.color.text_black));
+			
+			// Login on Facebook
+			boolean success = FacebookUtils.login(getActivity(), new SaveCallback() {
+				
+				@Override
+				public void done(ParseException e) {
+					if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
+						FacebookUtils.saveUserId();
+    					// Request permission to post on Facebook
+    					ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest(getActivity(), Arrays.asList(Permissions.Extended.PUBLISH_STREAM, Permissions.User.PHOTOS)));
+    					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
+    					Log.d(TAG, "Woohoo, user logged in with Facebook!");
+    				} else {
+    					Log.d(TAG, "Aaarggh, NOT logged in with Facebook.");
+    					if (e != null) Log.d(TAG, "Error: " + e.getMessage());
+    					toggleFacebookShare(shareOnFacebook);
+    				}
+				}
+			});
+			if (!success) {
+				toggleFacebookShare(shareOnFacebook);
+			}
 		} else {
 			shareOnFacebook = false;
 			shareFacebookIcon.setImageDrawable(getResources().getDrawable(R.drawable.facebook_gray));
@@ -234,6 +243,25 @@ public class ShareMomentFragment extends Fragment {
 			shareOnTwitter = true;
 			shareTwitterIcon.setImageDrawable(getResources().getDrawable(R.drawable.twitter_color));
 			shareTwitterText.setTextColor(getResources().getColor(R.color.text_black));
+			
+			// Login on Twitter
+			boolean success = TwitterUtils.login(getActivity(), new SaveCallback() {
+				
+				@Override
+				public void done(ParseException e) {
+					if (ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())) {
+    					Log.d(TAG, "Woohoo, user logged in with Twitter!");
+    					TwitterUtils.saveUserId();
+    				} else {
+    					Log.d(TAG, "Aaarggh, NOT logged in with Twitter.");
+    					if (e != null) Log.d(TAG, "Error: " + e.getMessage());
+    					toggleTwitterShare(shareOnTwitter);
+    				}
+				}
+			});
+			if (!success) {
+				toggleTwitterShare(shareOnTwitter);
+			}
 		} else {
 			shareOnTwitter = false;
 			shareTwitterIcon.setImageDrawable(getResources().getDrawable(R.drawable.twitter_gray));
@@ -258,69 +286,11 @@ public class ShareMomentFragment extends Fragment {
 			shareOnPath = true;
 			sharePathIcon.setImageDrawable(getResources().getDrawable(R.drawable.path_color));
 			sharePathText.setTextColor(getResources().getColor(R.color.text_black));
+			loginOnPath();
 		} else {
 			shareOnPath = false;
 			sharePathIcon.setImageDrawable(getResources().getDrawable(R.drawable.path_gray));
 			sharePathText.setTextColor(getResources().getColor(R.color.separator_grey));
-		}
-	}
-	
-	private void loginOnFacebook() {
-		Log.d(TAG, "Clicked on Share on Facebook.");
-    	ParseUser currentUser = ParseUser.getCurrentUser();
-    	try {
-			currentUser.save();
-	    	if (!ParseFacebookUtils.isLinked(currentUser)) {
-	    		Log.d(TAG, "Connecting to Facebook...");
-	    		ParseFacebookUtils.link(currentUser, getActivity(), FACEBOOK_REQUEST_CODE, new SaveCallback() {
-	    			@Override
-	    		    public void done(ParseException ex) {
-	    				if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
-	    					getFacebookIdInBackground();
-	    					// Request permission to post on Facebook
-	    					ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest(getActivity(), Arrays.asList(Permissions.Extended.PUBLISH_STREAM, Permissions.User.PHOTOS)));
-	    					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
-	    					Log.d(TAG, "Woohoo, user logged in with Facebook!");
-	    				} else {
-	    					Log.d(TAG, "Aaarggh, NOT logged in with Facebook:"+ex.getMessage());
-	    					toggleFacebookShare(shareOnFacebook);
-	    				}
-	    		    }
-	    		});
-    		} else {
-    			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
-    		}
-    	} catch (ParseException e) {
-			e.printStackTrace();
-			toggleFacebookShare(shareOnFacebook);
-		}
-	}
-	
-	private void loginOnTwitter() {
-		Log.d(TAG, "Clicked on Share on Twitter.");
-    	ParseUser currentUser = ParseUser.getCurrentUser();
-    	try {
-			currentUser.save();
-			if (!ParseTwitterUtils.isLinked(currentUser)) {
-	    		Log.d(TAG, "Connecting to Twitter...");
-	    		ParseTwitterUtils.link(currentUser, getActivity(), new SaveCallback() {
-	    			@Override
-	    		    public void done(ParseException ex) {
-	    				if (ParseTwitterUtils.isLinked(ParseUser.getCurrentUser())) {
-	    					Log.d(TAG, "Woohoo, user logged in with Twitter!");
-	    					getTwitterId();
-	    				} else {
-	    					Log.d(TAG, "Aaarggh, NOT logged in with Twitter:"+ex.getMessage());
-	    					toggleTwitterShare(shareOnTwitter);
-	    				}
-	    		    }
-	    		});
-    		} else {
-    			Log.d(TAG, "Good news, the user is already linked to a Twitter account.");
-    		}
-    	} catch (ParseException e) {
-    		toggleTwitterShare(shareOnTwitter);
-			e.printStackTrace();
 		}
 	}
 	
@@ -338,57 +308,6 @@ public class ShareMomentFragment extends Fragment {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	
-	
-	private static void getFacebookIdInBackground() {
-		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
-			@Override
-			public void onCompleted(GraphUser user, Response response) {
-				if (user != null) {
-					ParseUser.getCurrentUser().put("facebookId", user.getId());
-					ParseUser.getCurrentUser().saveInBackground();
-				}
-			}
-		}).executeAsync();
-	}
-	
-	private static void getTwitterId() {
-		String userId = ParseTwitterUtils.getTwitter().getUserId();
-		if (!Utils.isEmptyString(userId)) {
-			ParseUser.getCurrentUser().put("twitterId", userId);
-			ParseUser.getCurrentUser().saveInBackground();
-		}
-	}
-	
-	private static void getFriendsInBackground() {
-		Request.newMyFriendsRequest(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
-
-			  @Override
-			  public void onCompleted(List<GraphUser> users, Response response) {
-			    if (users != null) {
-			      List<String> friendsList = new ArrayList<String>();
-			      for (GraphUser user : users) {
-			        friendsList.add(user.getId());
-			      }
-
-			      // Construct a ParseUser query that will find friends whose
-			      // facebook IDs are contained in the current user's friend list.
-			      ParseQuery<ParseUser> friendQuery = ParseUser.getQuery();
-			      friendQuery.whereContainedIn("facebookId", friendsList);
-
-			      // findObjects will return a list of ParseUsers that are friends with
-			      // the current user
-			      try {
-					List<ParseUser> friendUsers = friendQuery.find();
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			    }
-			  }
-			}).executeAsync();
 	}
 	
 	public void shareMoment() {
@@ -429,16 +348,40 @@ public class ShareMomentFragment extends Fragment {
 		if (!Utils.isEmptyString(moment.getLocationDescription())) {
 			fullCaption += " - From "+moment.getLocationDescription();
 		}
+		
+		// Publish on Facebook
 		if (shareOnFacebook) {
 			Log.d(TAG, "Sharing moment on Facebook...");
-			Thread thread = new Thread(new PostPhotoOnFacebookRunnable(getActivity(), photoFile.getUrl(), fullCaption));
-	        thread.start();
+			FacebookUtils.publishPhoto(photoFile.getUrl(), fullCaption, new PublishCallback() {
+
+				@Override
+				public void done(BackflipException e) {
+					if (e != null) {
+						Log.e(TAG, "An error occured when sharing on Facebook: " + e.getMessage());
+						Utils.showToast(getActivity(), "An error occured when sharing on Facebook");
+					}
+				}
+			});
 		}
+		
+		// Publish on Twitter
 		if (shareOnTwitter && !Utils.isEmptyString(moment.getObjectId())) {
 			Log.d(TAG, "Sharing moment on Twitter...");
-			Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
-	        thread.start();
+			TwitterUtils.publishPhoto(moment.getObjectId(), moment.getCaption(), new PublishCallback() {
+
+				@Override
+				public void done(BackflipException e) {
+					if (e != null) {
+						Log.e(TAG, "An error occured when sharing on Twitter: " + e.getMessage());
+						Utils.showToast(getActivity(), "An error occured when sharing on Twitter");
+					}
+				}
+			});
+			//Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
+	        //thread.start();
 		}
+		
+		// Publish on Path
 		if (shareOnPath) {
 			Log.d(TAG, "Sharing moment on Path...");
 			PathUtils.publishPhoto(photoFile.getUrl(), fullCaption, new PublishCallback() {
@@ -446,13 +389,14 @@ public class ShareMomentFragment extends Fragment {
 				@Override
 				public void done(BackflipException e) {
 					if (e != null) {
+						Log.e(TAG, "An error occured when sharing on Path" + e.getMessage());
 						Utils.showToast(getActivity(), "An error occured when sharing on Path");
 					}
 				}
 			});
-			//Thread thread = new Thread(new PostPhotoOnPathRunnable(getActivity(), photoFile.getUrl(), fullCaption));
-	        //thread.start();
 		}
+		
+		// Publish on Instagram
 		if (shareOnInstagram) {
 			Log.d(TAG, "Sharing moment on Instagram...");
 			Thread thread = new Thread(new PostPhotoOnInstagramRunnable(getActivity()));
@@ -502,16 +446,13 @@ public class ShareMomentFragment extends Fragment {
 				togglePathShare(shareOnPath);
 				Utils.showToast(getActivity(), "Could not connect to Path...");
 			}
-		}else if (resultCode == Activity.RESULT_OK) {
+		} else if (resultCode == Activity.RESULT_OK) {
 			ParseUser currentUser = ParseUser.getCurrentUser();
 			if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
 				shareMoment();
 			} else {
 				Utils.showToast(getActivity(), "We couldn't sign you in...");
 			}
-		}/* else if (resultCode == FACEBOOK_ACTIVITY_CODE) {
-			Log.d(TAG, "Finishing Facebook authentication....");
-			ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
-		}*/
+		}
 	}
 }

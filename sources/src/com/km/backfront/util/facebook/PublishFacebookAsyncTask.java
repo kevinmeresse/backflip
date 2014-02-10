@@ -1,4 +1,4 @@
-package com.km.backfront.util;
+package com.km.backfront.util.facebook;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,42 +7,41 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.util.Log;
-
 import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.km.backfront.util.BackflipException;
+import com.km.backfront.util.PublishCallback;
+import com.km.backfront.util.Utils;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils.Permissions;
 
-public class PostPhotoOnFacebookRunnable implements Runnable {
-	
-	private static final String TAG = "PostPhotoOnFacebookRunnable";
-	private Activity activity = null;
-	private String photoUrl = "";
-	private String photoCaption = "";
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 
-	public PostPhotoOnFacebookRunnable(Activity activity, String photoUrl, String photoCaption) {
-		// store parameter for later user
-		this.activity = activity;
+public class PublishFacebookAsyncTask extends AsyncTask<Void, Void, BackflipException> {
+
+	private static final String TAG = "PublishPathAsyncTask";
+	private String photoUrl;
+	private String photoCaption;
+	private PublishCallback callback;
+	
+	public PublishFacebookAsyncTask(String photoUrl, String photoCaption, PublishCallback callback) {
 		this.photoUrl = photoUrl;
 		this.photoCaption = photoCaption;
-   }
-
+		this.callback = callback;
+	}
+	
 	@Override
-	public void run() {
-		// Moves the current Thread into the background
-        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        
-        // Retrieve Facebook session from Parse
+	protected BackflipException doInBackground(Void... args) {
+		// Retrieve Facebook session from Parse
         Session session = ParseFacebookUtils.getSession();
         // List mandatory permissions
-        final List<String> PERMISSIONS = Arrays.asList(Permissions.Extended.PUBLISH_STREAM, "photo_upload");
+        final List<String> PERMISSIONS = Arrays.asList(Permissions.Extended.PUBLISH_STREAM, FacebookUtils.PERMISSION_PHOTO_UPLOAD);
 	    
         // We try to post on Facebook only if we have an active session
 	    if (session != null) {
@@ -51,12 +50,7 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
 	        // Check for publish permissions    
 	        List<String> permissions = session.getPermissions();
 	        if (!Utils.isSubsetOf(PERMISSIONS, permissions)) {
-	        	Log.d(TAG, "This user has not authorized us to publish...");
-	        	for (int i = 0; i < permissions.size(); i++) {
-	        		Log.d(TAG, "   - Permission: "+permissions.get(i));
-	        	}
-	        	Utils.showToast(this.activity, "An error occured while posting photo on Facebook...");
-	        	return;
+	        	return new BackflipException("This user has not authorized us to publish...");
 	        }
 	        Log.d(TAG, "Good. This user has authorized us to publish :-)");
 	        
@@ -71,7 +65,7 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
 	        	Bundle params = new Bundle();
 	        	Request request = new Request(
 	        					session, 
-		    	        		"me/albums", 
+		    	        		FacebookUtils.ALBUMS_URI, 
 		    	        		params, 
 		                        HttpMethod.GET);
 	        	
@@ -90,7 +84,7 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
                 for (int i = 0; i < albumsArray.length(); i++) {
                     JSONObject item = albumsArray.getJSONObject(i);
                     Log.d(TAG, "   - Album: "+item.getString("name"));
-                    if (item.getString("name").equals("Backflip moments")) {
+                    if (item.getString("name").equals(FacebookUtils.ALBUM_NAME)) {
                     	albumId = item.getString("id");
                     	Log.d(TAG, "Found Backflip album (id: "+albumId+").");
                     	break;
@@ -104,10 +98,10 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
                 	Log.d(TAG, "Unable to find Backflip album. Creating a new one...");
                 	// Create Facebook request
                 	params = new Bundle();
-        	        params.putString("name", "Backflip moments");
+        	        params.putString("name", FacebookUtils.ALBUM_NAME);
         	        request = new Request(
         	        		session, 
-        	        		"me/albums", 
+        	        		FacebookUtils.ALBUMS_URI, 
         	        		params, 
                             HttpMethod.POST);
         	        
@@ -137,7 +131,7 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
     	        params.putString("message", this.photoCaption);
     	        request = new Request(
     	        		session, 
-    	        		albumId+"/photos", 
+    	        		FacebookUtils.getPublishPhotoUri(albumId), 
     	        		params, 
                         HttpMethod.POST);
 
@@ -150,20 +144,20 @@ public class PostPhotoOnFacebookRunnable implements Runnable {
     	        if (error != null) throw new FacebookException(error.getErrorMessage());
     	    
 	        } catch (JSONException e) {
-                Log.e(TAG, "JSON error: "+ e.getMessage());
-                error = new FacebookRequestError(1, "JSON error", e.getMessage());
-	        } catch (FacebookException e) {
-                Log.e(TAG, "Facebook server error: "+ e.getMessage());
+	        	return new BackflipException("JSON error: "+ e.getMessage());
+            } catch (FacebookException e) {
+            	return new BackflipException("Facebook server error: "+ e.getMessage());
             } catch (Exception e) {
-            	Log.e(TAG, "Unknown error: "+ e.getMessage());
-            	e.printStackTrace();
-            	error = new FacebookRequestError(1, "Unknown error", e.getMessage());
-            }
-	        
-	        // Handle errors
-	        if (error != null) {
-                Utils.showToast(this.activity, "An error occured while posting photo on Facebook...");
+            	return new BackflipException("Unknown error: "+ e.getMessage());
             }
 	    }
+	    return null;
 	}
+
+	@Override
+    protected void onPostExecute(BackflipException exception) {
+        // called in UI thread
+        callback.done(exception);
+        super.onPostExecute(exception);
+    }
 }
