@@ -163,13 +163,13 @@
 				android:id="@+id/share_path_icon"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:src="@drawable/tumbr_gray"
+				android:src="@drawable/path_gray"
 		        android:background="@drawable/cell_shape" />
 		    <TextView
 		        android:id="@+id/share_path_text"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
-		        android:text="@string/tumblr_text"
+		        android:text="@string/path_text"
 		        android:textColor="@color/separator_grey"
 		        android:gravity="center"
 		        android:layout_weight="1"

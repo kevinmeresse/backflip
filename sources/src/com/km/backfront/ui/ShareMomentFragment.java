@@ -7,12 +7,15 @@ import java.util.List;
 
 import com.km.backfront.R;
 import com.km.backfront.model.Moment;
+import com.km.backfront.util.BackflipException;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.CacheManager;
 import com.km.backfront.util.PostPhotoOnFacebookRunnable;
 import com.km.backfront.util.PostPhotoOnInstagramRunnable;
 import com.km.backfront.util.PostPhotoOnTwitterRunnable;
+import com.km.backfront.util.PublishCallback;
 import com.km.backfront.util.Utils;
+import com.km.backfront.util.path.PathUtils;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseFacebookUtils.Permissions;
@@ -45,7 +48,10 @@ import android.widget.TextView;
 public class ShareMomentFragment extends Fragment {
 	
 	protected static final String TAG = "ShareMomentFragment";
-	protected static final int FACEBOOK_ACTIVITY_CODE = 76;
+	protected static final int FACEBOOK_REQUEST_CODE = 76;
+	protected static final int TWITTER_REQUEST_CODE = 77;
+	protected static final int INSTAGRAM_REQUEST_CODE = 78;
+	protected static final int PATH_REQUEST_CODE = 79;
 	private ParseFile photoFile;
 	private TextView momentCaption;
 	private TextView momentLocation;
@@ -62,10 +68,13 @@ public class ShareMomentFragment extends Fragment {
 	private TextView shareTwitterText;
 	private ImageButton shareInstagramIcon;
 	private TextView shareInstagramText;
+	private ImageButton sharePathIcon;
+	private TextView sharePathText;
 	
 	private boolean shareOnFacebook = false;
 	private boolean shareOnTwitter = false;
 	private boolean shareOnInstagram = false;
+	private boolean shareOnPath = false;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +99,8 @@ public class ShareMomentFragment extends Fragment {
     	shareTwitterText = (TextView) v.findViewById(R.id.share_twitter_text);
     	shareInstagramIcon = (ImageButton) v.findViewById(R.id.share_instagram_icon);
     	shareInstagramText = (TextView) v.findViewById(R.id.share_instagram_text);
+    	sharePathIcon = (ImageButton) v.findViewById(R.id.share_path_icon);
+    	sharePathText = (TextView) v.findViewById(R.id.share_path_text);
     	
     	// Set the preview image
     	Bitmap momentImageScaled = BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 200);
@@ -189,6 +200,20 @@ public class ShareMomentFragment extends Fragment {
 		    }
     	});
     	
+    	// Action: click on Path
+    	sharePathIcon.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	togglePathShare(shareOnPath);
+		    	if (shareOnPath) loginOnPath();
+		    }
+    	});
+    	sharePathText.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	togglePathShare(shareOnPath);
+		    	if (shareOnPath) loginOnPath();
+		    }
+    	});
+    	
     	return v;
 	}
 	
@@ -228,6 +253,18 @@ public class ShareMomentFragment extends Fragment {
 		}
 	}
 	
+	private void togglePathShare(boolean isCurrentlyActivated) {
+		if (!isCurrentlyActivated) {
+			shareOnPath = true;
+			sharePathIcon.setImageDrawable(getResources().getDrawable(R.drawable.path_color));
+			sharePathText.setTextColor(getResources().getColor(R.color.text_black));
+		} else {
+			shareOnPath = false;
+			sharePathIcon.setImageDrawable(getResources().getDrawable(R.drawable.path_gray));
+			sharePathText.setTextColor(getResources().getColor(R.color.separator_grey));
+		}
+	}
+	
 	private void loginOnFacebook() {
 		Log.d(TAG, "Clicked on Share on Facebook.");
     	ParseUser currentUser = ParseUser.getCurrentUser();
@@ -235,7 +272,7 @@ public class ShareMomentFragment extends Fragment {
 			currentUser.save();
 	    	if (!ParseFacebookUtils.isLinked(currentUser)) {
 	    		Log.d(TAG, "Connecting to Facebook...");
-	    		ParseFacebookUtils.link(currentUser, getActivity(), FACEBOOK_ACTIVITY_CODE, new SaveCallback() {
+	    		ParseFacebookUtils.link(currentUser, getActivity(), FACEBOOK_REQUEST_CODE, new SaveCallback() {
 	    			@Override
 	    		    public void done(ParseException ex) {
 	    				if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
@@ -282,10 +319,28 @@ public class ShareMomentFragment extends Fragment {
     			Log.d(TAG, "Good news, the user is already linked to a Twitter account.");
     		}
     	} catch (ParseException e) {
+    		toggleTwitterShare(shareOnTwitter);
 			e.printStackTrace();
-			toggleTwitterShare(shareOnTwitter);
 		}
 	}
+	
+	private void loginOnPath() {
+		Log.d(TAG, "Clicked on Share on Path.");
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		try {
+			currentUser.save();
+			if (currentUser.get("pathAccessToken") == null) {
+				Intent intent = new Intent(getActivity(), LoginPathActivity.class);
+		    	startActivityForResult(intent, PATH_REQUEST_CODE);
+			}
+		} catch (ParseException e) {
+			togglePathShare(shareOnPath);
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	
 	private static void getFacebookIdInBackground() {
 		Request.newMeRequest(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
@@ -384,6 +439,20 @@ public class ShareMomentFragment extends Fragment {
 			Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
 	        thread.start();
 		}
+		if (shareOnPath) {
+			Log.d(TAG, "Sharing moment on Path...");
+			PathUtils.publishPhoto(photoFile.getUrl(), fullCaption, new PublishCallback() {
+
+				@Override
+				public void done(BackflipException e) {
+					if (e != null) {
+						Utils.showToast(getActivity(), "An error occured when sharing on Path");
+					}
+				}
+			});
+			//Thread thread = new Thread(new PostPhotoOnPathRunnable(getActivity(), photoFile.getUrl(), fullCaption));
+	        //thread.start();
+		}
 		if (shareOnInstagram) {
 			Log.d(TAG, "Sharing moment on Instagram...");
 			Thread thread = new Thread(new PostPhotoOnInstagramRunnable(getActivity()));
@@ -425,8 +494,15 @@ public class ShareMomentFragment extends Fragment {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "On activity result... Result code: "+resultCode);
-		if (resultCode == Activity.RESULT_OK) {
+		Log.d(TAG, "On activity result... Request code: "+requestCode);
+		if (requestCode == PATH_REQUEST_CODE) {
+			Log.d(TAG, "Returning from LoginPathActivity...");
+			if (resultCode != Activity.RESULT_OK) {
+				Log.d(TAG, "Apparently it has been canceled. Disabling Path sharing...");
+				togglePathShare(shareOnPath);
+				Utils.showToast(getActivity(), "Could not connect to Path...");
+			}
+		}else if (resultCode == Activity.RESULT_OK) {
 			ParseUser currentUser = ParseUser.getCurrentUser();
 			if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
 				shareMoment();

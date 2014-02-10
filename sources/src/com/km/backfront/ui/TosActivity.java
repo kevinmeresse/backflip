@@ -18,7 +18,7 @@ public class TosActivity extends Activity {
 		setContentView(webview);
 		
 		// Load the web page
-		webview.loadUrl("http://bckfrnt.co/tos/index.html");
+		webview.loadUrl("http://bckflp.co/tos/index.html");
 	}
 
 }

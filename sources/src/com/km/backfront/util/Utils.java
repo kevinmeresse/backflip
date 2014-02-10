@@ -94,15 +94,17 @@ public class Utils {
 	  }
 	  
 	  public static void showToast(final Activity activity, final String message) {
-		  activity.runOnUiThread(new Runnable() {
-	          public void run() {
-	        	  try {
-	        		  Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-	        	  } catch (Exception e) {
-	        		  Log.i(TAG, "Failed to display a toast message: "+message);
-                  }
-	          }
-	      });
+		  if (activity != null) {
+			  activity.runOnUiThread(new Runnable() {
+		          public void run() {
+		        	  try {
+		        		  Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+		        	  } catch (Exception e) {
+		        		  Log.i(TAG, "Failed to display a toast message: "+message);
+	                  }
+		          }
+		      });
+		  }
 	  }
 	  
 	  public static boolean isEmptyString(String text) {

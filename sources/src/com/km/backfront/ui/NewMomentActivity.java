@@ -45,7 +45,7 @@ public class NewMomentActivity extends FragmentActivity {
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.d(TAG, "On activity result... Result code: "+resultCode);
+		Log.d(TAG, "On activity result... Request code: "+requestCode);
 		super.onActivityResult(requestCode, resultCode, data);
 	    try {
 	    	Log.d(TAG, "Finishing Facebook authentication....");
