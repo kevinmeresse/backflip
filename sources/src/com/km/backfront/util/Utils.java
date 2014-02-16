@@ -107,6 +107,20 @@ public class Utils {
 		  }
 	  }
 	  
+	  public static void showToast(final Activity activity, final String message, final int length) {
+		  if (activity != null) {
+			  activity.runOnUiThread(new Runnable() {
+		          public void run() {
+		        	  try {
+		        		  Toast.makeText(activity, message, length).show();
+		        	  } catch (Exception e) {
+		        		  Log.i(TAG, "Failed to display a toast message: "+message);
+	                  }
+		          }
+		      });
+		  }
+	  }
+	  
 	  public static boolean isEmptyString(String text) {
 		  if (text != null && !text.isEmpty()) {
 			  return false;

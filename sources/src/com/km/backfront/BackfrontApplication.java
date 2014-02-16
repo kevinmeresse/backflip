@@ -2,6 +2,7 @@ package com.km.backfront;
 
 import android.app.Application;
 
+import com.km.backfront.model.Follow;
 import com.km.backfront.model.Like;
 import com.km.backfront.model.Moment;
 import com.km.backfront.model.Report;
@@ -24,6 +25,7 @@ public class BackfrontApplication extends Application {
 		ParseObject.registerSubclass(Moment.class);
 		ParseObject.registerSubclass(Like.class);
 		ParseObject.registerSubclass(Report.class);
+		ParseObject.registerSubclass(Follow.class);
 
 		/*
 		 * Fill in this section with your Parse credentials

@@ -52,6 +52,22 @@ public class Moment extends ParseObject {
 		put("photo", file);
 	}
 	
+	public ParseFile getThumbnail() {
+		return getParseFile("thumbnail");
+	}
+
+	public void setThumbnail(ParseFile file) {
+		put("thumbnail", file);
+	}
+	
+	public ParseFile getBadPreview() {
+		return getParseFile("badPreview");
+	}
+
+	public void setBadPreview(ParseFile file) {
+		put("badPreview", file);
+	}
+	
 	public String getLocationDescription() {
 		return getString("locationDescription");
 	}

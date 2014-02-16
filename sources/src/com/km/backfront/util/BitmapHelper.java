@@ -386,4 +386,21 @@ public class BitmapHelper {
         }
         return b;
     }
+    
+    public static Bitmap applyGaussianBlur(Bitmap src) {
+    	//set gaussian blur configuration
+    	double[][] GaussianBlurConfig = new double[][] {
+    			{ 1, 2, 1 },
+    			{ 2, 4, 2 },
+    			{ 1, 2, 1 }
+    	};
+    	// create instance of Convolution matrix
+    	ConvolutionMatrix convMatrix = new ConvolutionMatrix(3);
+    	// Apply Configuration
+    	convMatrix.applyConfig(GaussianBlurConfig);
+    	convMatrix.Factor = 16;
+    	convMatrix.Offset = 0;
+    	//return out put bitmap
+    	return ConvolutionMatrix.computeConvolution3x3(src, convMatrix);
+    }
 }

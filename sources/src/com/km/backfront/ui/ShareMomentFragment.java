@@ -46,6 +46,8 @@ public class ShareMomentFragment extends Fragment {
 	protected static final int INSTAGRAM_REQUEST_CODE = 78;
 	protected static final int PATH_REQUEST_CODE = 79;
 	private ParseFile photoFile;
+	private ParseFile photoThumbnail;
+	private ParseFile photoBadPreview;
 	private TextView momentCaption;
 	private TextView momentLocation;
 	private ImageView momentPreview;
@@ -341,6 +343,23 @@ public class ShareMomentFragment extends Fragment {
 				}
 			}
 		});
+		
+		// Create bad preview
+		Bitmap badPreview = BitmapHelper.scaleToFitWidth(momentImage, 50);
+		badPreview = BitmapHelper.applyGaussianBlur(badPreview);
+		ByteArrayOutputStream bosBadPreview = new ByteArrayOutputStream();
+		badPreview.compress(Bitmap.CompressFormat.JPEG, 50, bosBadPreview);
+		byte[] scaledDataBadPreview = bosBadPreview.toByteArray();
+		photoBadPreview = new ParseFile("moment_bad_preview.jpg", scaledDataBadPreview);
+		photoBadPreview.saveInBackground();
+		
+		// Create thumbnail
+		Bitmap thumbnail = BitmapHelper.scaleToFitWidth(momentImage, 200);
+		ByteArrayOutputStream bosThumbnail = new ByteArrayOutputStream();
+		thumbnail.compress(Bitmap.CompressFormat.JPEG, 50, bosThumbnail);
+		byte[] scaledDataThumbnail = bosThumbnail.toByteArray();
+		photoThumbnail = new ParseFile("moment_thumbnail.jpg", scaledDataThumbnail);
+		photoThumbnail.saveInBackground();
 	}
 	
 	public void publishOnSocialNetworksInBackground(Moment moment) {
@@ -377,8 +396,6 @@ public class ShareMomentFragment extends Fragment {
 					}
 				}
 			});
-			//Thread thread = new Thread(new PostPhotoOnTwitterRunnable(getActivity(), moment.getObjectId(), moment.getCaption()));
-	        //thread.start();
 		}
 		
 		// Publish on Path
@@ -408,6 +425,8 @@ public class ShareMomentFragment extends Fragment {
 		Moment moment = new Moment();
 		// Add data to the moment object:
 		moment.setPhotoFile(photoFile);
+		moment.setThumbnail(photoThumbnail);
+		moment.setBadPreview(photoBadPreview);
 		moment.setCaption(momentCaption.getText().toString());
 		moment.setLocationDescription(momentLocation.getText().toString());
 		// Associate the moment with the current user

@@ -160,6 +160,7 @@ public class MainActivity extends FragmentActivity {
         private static final String IMAGE_POSITION = "imgPos";
 		private static final String TAG = "MomentFragment";
 		private Moment moment;
+        private ParseImageView imageBadPreview;
         private ParseImageView imageView;
         private TextView momentAuthorView;
         private TextView momentCaptionView;
@@ -205,6 +206,7 @@ public class MainActivity extends FragmentActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.fragment_feed_pager_details, container, false);
+            imageBadPreview = (ParseImageView) v.findViewById(R.id.imageBadPreview);
             imageView = (ParseImageView) v.findViewById(R.id.imageView);
             //imageView.setPlaceholder(getResources().getDrawable(R.drawable.placeholder));
             imageView.setPlaceholder(null);
@@ -283,6 +285,16 @@ public class MainActivity extends FragmentActivity {
             momentMoreButton.setOnClickListener(new View.OnClickListener() {
     		    public void onClick(View v) {
     		        popup.show();
+    		    }
+    		});
+            
+            // Action: Click on author
+            momentAuthorView.setOnClickListener(new View.OnClickListener() {
+    		    public void onClick(View v) {
+    		    	Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+    		    	intent.putExtra("USER_ID", moment.getAuthor().getObjectId());
+    		    	intent.putExtra("USERNAME", moment.getAuthor().getUsername());
+    		    	startActivity(intent);
     		    }
     		});
             
@@ -398,8 +410,9 @@ public class MainActivity extends FragmentActivity {
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             if (moments.size() > 0) {
-	            imageView.setParseFile(moment.getPhotoFile());
-	            imageView.loadInBackground(new GetDataCallback() {
+            	// Load the bad preview first
+            	imageBadPreview.setParseFile(moment.getBadPreview());
+            	imageBadPreview.loadInBackground(new GetDataCallback() {
 	            	@Override
 	            	public void done(byte[] data, ParseException e) {
 	            		momentLikeView.setVisibility(View.VISIBLE);
@@ -407,6 +420,10 @@ public class MainActivity extends FragmentActivity {
 	            		updateLikeCount();
 	            	}
 	            });
+            	
+            	// Then load the full picture
+	            imageView.setParseFile(moment.getPhotoFile());
+	            imageView.loadInBackground();
 	            
 	            momentAuthorView.setText(moment.getAuthor().getUsername());
 	            
@@ -415,7 +432,7 @@ public class MainActivity extends FragmentActivity {
 		            momentCaptionView.setVisibility(View.VISIBLE);
 	            }
 	            String location = moment.getLocationDescription();
-	            if (!location.isEmpty()) {
+	            if (!Utils.isEmptyString(location)) {
 	            	momentCreatedView.setText(Utils.getTimeFromDateToNow(moment.getCreatedAt()) + " from " + location);
 	            } else {
 	            	momentCreatedView.setText(Utils.getTimeFromDateToNow(moment.getCreatedAt()));

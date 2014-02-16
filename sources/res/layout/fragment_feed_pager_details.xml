@@ -4,10 +4,28 @@
     android:layout_height="fill_parent" >
 
     <ProgressBar
+        android:id="@+id/moment_loading"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+    
+    <TextView  
+        android:id="@+id/moment_not_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This moment doesn't exist anymore..."
+        android:textColor="#ffffffff"
+        android:textSize="15sp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+    
+    <com.parse.ParseImageView
+        android:id="@+id/imageBadPreview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:contentDescription="@string/imageview_description"
+        android:scaleType="centerCrop" />
 
     <com.parse.ParseImageView
         android:id="@+id/imageView"
@@ -30,7 +48,6 @@
         android:src="@drawable/icon_love"
         android:layout_gravity="center"
         android:contentDescription="@string/like_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:visibility="invisible" />
     <TextView  
@@ -48,7 +65,6 @@
         android:src="@drawable/icon_more"
         android:layout_gravity="top|right"
         android:contentDescription="@string/more_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:visibility="invisible" />
     

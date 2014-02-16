@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white" >
+    
+    <RelativeLayout
+        android:id="@+id/profile_top_bar"
+	    android:layout_width="fill_parent"
+	    android:layout_height="50dp"
+	    android:background="@color/dark_grey" >
+	    <ImageButton
+			android:id="@+id/profile_top_bar_icon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="left"
+			android:layout_centerVertical="true"
+			android:src="@drawable/icon_up_caret"
+			android:layout_marginLeft="5dp"
+			android:layout_marginRight="5dp"
+			android:background="@color/transparent"
+			android:contentDescription="@string/profile_top_bar_title" />
+	    <Button
+	        android:id="@+id/profile_top_bar_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/profile_top_bar_icon"
+	        android:layout_centerVertical="true"
+	        android:textColor="@color/white"
+	        android:text="@string/profile_top_bar_title"
+	        android:textStyle="bold"
+	        android:background="@color/transparent" />
+    </RelativeLayout>
+    
+    
+    
+    <RelativeLayout
+        android:id="@+id/profile_info"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/profile_top_bar"
+	    android:layout_marginBottom="15dp" >
+    
+	    <ImageView
+			android:id="@+id/profile_avatar"
+			android:layout_width="100dp"
+			android:layout_height="100dp"
+			android:layout_gravity="top|left"
+			android:background="@color/separator_grey"
+			android:src="@drawable/avatar1"
+			android:scaleType="centerCrop"
+			android:layout_marginTop="15dp"
+			android:layout_marginLeft="15dp"
+			android:layout_marginRight="15dp" />
+	    
+	    <TextView
+	        android:id="@+id/profile_username"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/text_black"
+	        android:textSize="20sp"
+	        android:textStyle="bold"
+	        android:layout_gravity="top"
+	        android:layout_toRightOf="@id/profile_avatar"
+	        android:background="@color/transparent"
+	        android:layout_marginTop="15dp"
+	        android:layout_marginRight="15dp"
+	        android:layout_marginBottom="0dp" />
+	    
+	    <TextView
+	        android:id="@+id/profile_email"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/text_black"
+	        android:textSize="15sp"
+	        android:textStyle="italic"
+	        android:layout_toRightOf="@id/profile_avatar"
+	        android:layout_below="@id/profile_username"
+	        android:layout_marginRight="15dp"
+	        android:layout_marginBottom="5dp"
+	        android:visibility="gone" />
+	    
+	    <Button
+		    android:id="@+id/profile_manage_social_button"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:text="Manage social networks"
+		    android:textColor="@color/white"
+		    android:gravity="center"
+		    android:background="@color/blue"
+		    android:paddingTop="10dp"
+		    android:paddingBottom="10dp"
+		    android:layout_toRightOf="@id/profile_avatar"
+		    android:layout_below="@id/profile_email"
+		    android:layout_marginTop="15dp"
+	        android:layout_marginRight="15dp"
+	        android:visibility="gone" />
+	    
+	    <Button
+		    android:id="@+id/profile_follow_button"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:text="follow"
+		    android:textColor="@color/white"
+		    android:textAllCaps="true"
+		    android:gravity="center"
+		    android:background="@color/blue"
+		    android:paddingTop="10dp"
+		    android:paddingBottom="10dp"
+		    android:layout_toRightOf="@id/profile_avatar"
+		    android:layout_below="@id/profile_username"
+		    android:layout_marginTop="15dp"
+	        android:layout_marginRight="15dp"
+	        android:visibility="gone" />
+	    
+	    <Button
+		    android:id="@+id/profile_unfollow_button"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:text="unfollow"
+		    android:textColor="@color/text_black"
+		    android:textAllCaps="true"
+		    android:gravity="center"
+		    android:background="@drawable/button_stroke_shape"
+		    android:paddingTop="10dp"
+		    android:paddingBottom="10dp"
+		    android:layout_toRightOf="@id/profile_avatar"
+		    android:layout_below="@id/profile_username"
+		    android:layout_marginTop="15dp"
+	        android:layout_marginRight="15dp"
+	        android:visibility="gone" />
+    </RelativeLayout>
+    
+
+    <TableLayout
+        android:id="@+id/profile_followers_table"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/profile_info"
+		android:layout_marginBottom="15dp" >
+		<TableRow
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" >
+			<RelativeLayout
+		        android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:background="@drawable/cell_shape"
+			    android:paddingTop="5dp"
+	    		android:paddingBottom="5dp"
+	    		android:layout_weight="1" >
+			    <TextView
+			        android:id="@+id/profile_number_followers"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="..."
+			        android:textColor="@color/separator_grey"
+			        android:textSize="20sp"
+			        android:textStyle="bold"
+			        android:textAllCaps="true"
+			        android:layout_centerHorizontal="true" />
+			    <TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="followers"
+			        android:textColor="@color/separator_grey"
+			        android:textAllCaps="true"
+			        android:layout_centerHorizontal="true"
+			        android:layout_below="@id/profile_number_followers" />
+			</RelativeLayout>
+			<RelativeLayout
+		        android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:background="@drawable/cell_shape"
+			    android:paddingTop="5dp"
+	    		android:paddingBottom="5dp"
+	    		android:layout_weight="1" >
+			    <TextView
+			        android:id="@+id/profile_number_following"
+					android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="..."
+			        android:textColor="@color/separator_grey"
+			        android:textSize="20sp"
+			        android:textStyle="bold"
+			        android:textAllCaps="true"
+			        android:layout_centerHorizontal="true" />
+			    <TextView
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="following"
+			        android:textColor="@color/separator_grey"
+			        android:textAllCaps="true"
+			        android:layout_centerHorizontal="true"
+			        android:layout_below="@id/profile_number_following" />
+			</RelativeLayout>
+		</TableRow>
+    </TableLayout>
+		    
+    <FrameLayout
+        android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_below="@id/profile_followers_table"
+	     >
+		<ProgressBar
+            android:id="@+id/profile_grid_loading"
+	        style="?android:attr/progressBarStyleLarge"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:visibility="visible" />
+		<TextView
+	        android:id="@+id/profile_grid_offline"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:text="No internet connection..."
+	        android:visibility="invisible" />
+		<TextView
+	        android:id="@+id/profile_grid_empty"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:text="No picture to dislay yet..."
+	        android:visibility="invisible" />
+		<GridView
+		    android:id="@+id/gridview"
+		    android:layout_width="fill_parent" 
+		    android:layout_height="fill_parent"
+		    android:numColumns="3"
+		    android:verticalSpacing="8dp"
+		    android:horizontalSpacing="8dp"
+		    android:paddingLeft="8dp"
+		    android:paddingRight="8dp"
+		    android:stretchMode="columnWidth"
+		    android:gravity="center" />
+	</FrameLayout>
+
+</RelativeLayout>

@@ -4,17 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.SignUpCallback;
-
 import com.km.backfront.R;
 import com.km.backfront.util.Utils;
 
@@ -22,6 +19,9 @@ import com.km.backfront.util.Utils;
  * Activity which displays a login screen to the user.
  */
 public class SignUpActivity extends Activity {
+	
+	protected static final String TAG = "SignUpActivity";
+	
   // UI references.
   private EditText usernameView;
   private EditText passwordView;
@@ -92,9 +92,8 @@ public class SignUpActivity extends Activity {
 
         // If there is a validation error, display the error
         if (validationError) {
-          Toast.makeText(SignUpActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG)
-              .show();
-          return;
+        	Utils.showToast(SignUpActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG);
+        	return;
         }
 
         // Set up a progress dialog
@@ -123,8 +122,9 @@ public class SignUpActivity extends Activity {
           public void done(ParseException e) {
             dlg.dismiss();
             if (e != null) {
-              // Show the error message
-              Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+            	// Show the error message
+            	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
+            	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
             } else {
             	setResult(Activity.RESULT_OK);
             	finish();

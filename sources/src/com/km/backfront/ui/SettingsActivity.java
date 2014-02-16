@@ -3,6 +3,7 @@ package com.km.backfront.ui;
 import java.net.URISyntaxException;
 
 import com.km.backfront.R;
+import com.km.backfront.util.Utils;
 import com.parse.ParseUser;
 
 import android.app.Activity;
@@ -14,13 +15,13 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TableRow;
-import android.widget.Toast;
 
 public class SettingsActivity extends FragmentActivity {
 	
 	private ImageButton feedButton;
 	private ImageButton cameraButton;
 	private ImageButton settingsButton;
+	private TableRow settingsProfile;
 	private TableRow settingsLogout;
 	private TableRow settingsSignup;
 	
@@ -37,6 +38,7 @@ public class SettingsActivity extends FragmentActivity {
 		feedButton = (ImageButton) findViewById(R.id.menu_feed_button);
 		cameraButton = (ImageButton) findViewById(R.id.menu_add_button);
 		settingsButton = (ImageButton) findViewById(R.id.menu_settings_button);
+		settingsProfile = (TableRow) findViewById(R.id.settings_profile);
 		settingsLogout = (TableRow) findViewById(R.id.settings_logout);
 		settingsSignup = (TableRow) findViewById(R.id.settings_signup);
 		
@@ -62,14 +64,19 @@ public class SettingsActivity extends FragmentActivity {
 		    }
 		});
 		
+		// Action: Profile
+		settingsProfile.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+		    	startActivity(intent);
+		    }
+		});
+		
 		// Action: Logout
 		settingsLogout.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	ParseUser.logOut();
-		    	Toast.makeText(
-						getApplicationContext(),
-						"You have been logged out!",
-						Toast.LENGTH_SHORT).show();
+		    	Utils.showToast(SettingsActivity.this, "You have been logged out!");
 		    	finish();
 		    }
 		});
@@ -97,10 +104,7 @@ public class SettingsActivity extends FragmentActivity {
 			    	Intent intent = Intent.parseUri("mailto:support@bckfrnt.co?subject=Backfront - Report a problem", Intent.URI_INTENT_SCHEME);
 				    startActivity(intent);
 		    	} catch (URISyntaxException e) {
-		    		Toast.makeText(
-							getApplicationContext(),
-							"Sorry, something went wrong...",
-							Toast.LENGTH_SHORT).show();
+		    		Utils.showToast(SettingsActivity.this, "Sorry, something went wrong...");
 		    	}
 		    }
 		});
@@ -113,10 +117,7 @@ public class SettingsActivity extends FragmentActivity {
 		        try {
 		            startActivity(goToMarket);
 		        } catch (ActivityNotFoundException e) {
-		        	Toast.makeText(
-							getApplicationContext(),
-							"Couldn't launch the market...",
-							Toast.LENGTH_SHORT).show();
+		        	Utils.showToast(SettingsActivity.this, "Couldn't launch the market...");
 		        }
 		    }
 		});
