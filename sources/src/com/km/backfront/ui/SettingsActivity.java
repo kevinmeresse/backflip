@@ -67,8 +67,10 @@ public class SettingsActivity extends FragmentActivity {
 		// Action: Profile
 		settingsProfile.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	Intent intent = new Intent(v.getContext(), ProfileActivity.class);
-		    	startActivity(intent);
+		    	if (userLoggedIn()) {
+		    		Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+		    		startActivity(intent);
+		    	}
 		    }
 		});
 		
@@ -121,6 +123,15 @@ public class SettingsActivity extends FragmentActivity {
 		        }
 		    }
 		});
+    }
+    
+    public boolean userLoggedIn() {
+    	if (ParseUser.getCurrentUser() != null && !Utils.isEmptyString(ParseUser.getCurrentUser().getEmail())) {
+    		return true;
+    	}
+    	Intent intent = new Intent(this, SignUpActivity.class);
+    	startActivity(intent);
+    	return false;
     }
     
     @Override

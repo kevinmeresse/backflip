@@ -85,7 +85,8 @@ public class ProfileActivity extends Activity {
     	
     	// Retrieve user to display
     	Bundle extras = getIntent().getExtras();
-    	if (extras != null && !Utils.isEmptyString(extras.getString("USER_ID")) && !ParseUser.getCurrentUser().getObjectId().equals(extras.getString("USER_ID"))) {
+    	if (extras != null && !Utils.isEmptyString(extras.getString("USER_ID")) && 
+    			(ParseUser.getCurrentUser() == null || ParseUser.getCurrentUser().getObjectId() == null || !ParseUser.getCurrentUser().getObjectId().equals(extras.getString("USER_ID")))) {
     		isMyProfile = false;
     		displayedUser = new ParseUser();
     		displayedUser.setObjectId(extras.getString("USER_ID"));
