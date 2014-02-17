@@ -22,6 +22,8 @@ public class SettingsActivity extends FragmentActivity {
 	private ImageButton cameraButton;
 	private ImageButton settingsButton;
 	private TableRow settingsProfile;
+	private TableRow settingsFollowers;
+	private TableRow settingsFollowing;
 	private TableRow settingsLogout;
 	private TableRow settingsSignup;
 	
@@ -39,6 +41,8 @@ public class SettingsActivity extends FragmentActivity {
 		cameraButton = (ImageButton) findViewById(R.id.menu_add_button);
 		settingsButton = (ImageButton) findViewById(R.id.menu_settings_button);
 		settingsProfile = (TableRow) findViewById(R.id.settings_profile);
+		settingsFollowers = (TableRow) findViewById(R.id.settings_followers);
+		settingsFollowing = (TableRow) findViewById(R.id.settings_following);
 		settingsLogout = (TableRow) findViewById(R.id.settings_logout);
 		settingsSignup = (TableRow) findViewById(R.id.settings_signup);
 		
@@ -69,6 +73,26 @@ public class SettingsActivity extends FragmentActivity {
 		    public void onClick(View v) {
 		    	if (userLoggedIn()) {
 		    		Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+		    		startActivity(intent);
+		    	}
+		    }
+		});
+		
+		// Action: Followers
+		settingsFollowers.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	if (userLoggedIn()) {
+		    		Intent intent = new Intent(v.getContext(), FollowersActivity.class);
+		    		startActivity(intent);
+		    	}
+		    }
+		});
+		
+		// Action: Following
+		settingsFollowing.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	if (userLoggedIn()) {
+		    		Intent intent = new Intent(v.getContext(), FollowingActivity.class);
 		    		startActivity(intent);
 		    	}
 		    }

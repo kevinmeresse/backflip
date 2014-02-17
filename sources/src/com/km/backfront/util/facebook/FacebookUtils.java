@@ -9,6 +9,7 @@ import android.util.Log;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.km.backfront.util.ActivityUtils;
 import com.km.backfront.util.PublishCallback;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
@@ -36,6 +37,7 @@ public class FacebookUtils {
 	    	if (!ParseFacebookUtils.isLinked(currentUser)) {
 	    		Log.d(TAG, "Connecting to Facebook...");
 	    		ParseFacebookUtils.link(currentUser, activity, callback);
+	    		followFriendsInBackground();
     		} else {
     			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
     		}
@@ -63,7 +65,7 @@ public class FacebookUtils {
 		task.execute();
 	}
 	
-	public static void getFriendsInBackground() {
+	public static void followFriendsInBackground() {
 		Request.newMyFriendsRequest(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
 
 			  @Override
@@ -83,6 +85,9 @@ public class FacebookUtils {
 			      // the current user
 			      try {
 					List<ParseUser> friendUsers = friendQuery.find();
+					for (ParseUser friend : friendUsers) {
+						ActivityUtils.follow(ParseUser.getCurrentUser(), friend);
+					}
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

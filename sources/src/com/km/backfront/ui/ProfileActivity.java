@@ -20,7 +20,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.parse.CountCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -28,6 +30,7 @@ import com.parse.ParseUser;
 import com.km.backfront.R;
 import com.km.backfront.model.Follow;
 import com.km.backfront.model.Moment;
+import com.km.backfront.util.ActivityUtils;
 import com.km.backfront.util.Utils;
 
 /**
@@ -50,6 +53,7 @@ public class ProfileActivity extends Activity {
 	private TextView gridEmpty;
 	private ImageButton topBarIconButton;
 	private Button topBarTextButton;
+	private ParseImageView avatar;
 	private TextView profileUsername;
 	private TextView profileEmail;
 	private Button manageSocialButton;
@@ -75,6 +79,7 @@ public class ProfileActivity extends Activity {
 		gridEmpty = (TextView) findViewById(R.id.profile_grid_empty);
 		topBarIconButton = (ImageButton) findViewById(R.id.profile_top_bar_icon);
     	topBarTextButton = (Button) findViewById(R.id.profile_top_bar_text);
+    	avatar = (ParseImageView) findViewById(R.id.avatar);
     	profileUsername = (TextView) findViewById(R.id.profile_username);
     	profileEmail = (TextView) findViewById(R.id.profile_email);
     	manageSocialButton = (Button) findViewById(R.id.profile_manage_social_button);
@@ -98,6 +103,7 @@ public class ProfileActivity extends Activity {
     	// Toggle follow/unfollow button if needed
     	displayUnfollowButtonIfNeeded();
     	
+    	
     	// Update user info
     	profileUsername.setText(displayedUser.getUsername());
     	if (isMyProfile) {
@@ -105,7 +111,7 @@ public class ProfileActivity extends Activity {
     			profileEmail.setText(displayedUser.getEmail());
     			profileEmail.setVisibility(View.VISIBLE);
     		}
-    		manageSocialButton.setVisibility(View.VISIBLE);
+    		//manageSocialButton.setVisibility(View.VISIBLE);
     	} else {
     		followButton.setVisibility(View.VISIBLE);
     	}
@@ -115,6 +121,13 @@ public class ProfileActivity extends Activity {
 		gridAdapter = new GridImageAdapter(this);
 		gridview.setAdapter(gridAdapter);
 	    updateGrid();
+	    
+	    try {
+			avatar.setParseFile((ParseFile) displayedUser.fetchIfNeeded().get("avatar"));
+			avatar.loadInBackground();
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 	    
 	    // Action: click on top bar icon
     	topBarIconButton.setOnClickListener(new View.OnClickListener() {
@@ -140,13 +153,8 @@ public class ProfileActivity extends Activity {
 		    	// Increment count on screen
 		    	incrementFollowers();
 		    	
-		    	// Create object
-		    	Follow follow = new Follow();
-		    	follow.setFromUser(ParseUser.getCurrentUser());
-		    	follow.setToUser(ParseUser.createWithoutData(ParseUser.class, displayedUser.getObjectId()));
-		    	
-		    	// Save the follow to Parse
-		    	follow.saveInBackground();
+		    	// Follow
+		    	ActivityUtils.follow(ParseUser.getCurrentUser(), displayedUser);
 		    }
     	});
     	
@@ -160,18 +168,8 @@ public class ProfileActivity extends Activity {
 		    	// Decrement count on screen
 		    	decrementFollowers();
 		    	
-		    	ParseQuery<Follow> query = ParseQuery.getQuery(Follow.class);
-	        	query.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-	        	query.whereEqualTo("toUser", displayedUser);
-		    	query.findInBackground(new FindCallback<Follow>() {
-		            public void done(List<Follow> follows, ParseException e) {
-		                if (e == null && follows.size() > 0) {
-		                	for (Follow f : follows) {
-		                		f.deleteInBackground();
-		                	}
-		                }
-		            }
-		        });
+		    	// Unfollow
+		    	ActivityUtils.unfollow(ParseUser.getCurrentUser(), displayedUser);
 		    }
     	});
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@color/white" >
+    
+    <ImageView
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+	    android:layout_centerVertical="true"
+		android:background="@color/separator_grey"
+		android:src="@drawable/avatar1"
+		android:scaleType="centerCrop"
+		android:layout_margin="15dp" />
+    
+    <com.parse.ParseImageView
+		android:id="@+id/avatar"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_alignParentLeft="true"
+	    android:layout_centerVertical="true"
+		android:scaleType="centerCrop"
+		android:layout_margin="15dp" />
+    
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_toRightOf="@id/avatar"
+	    android:layout_centerVertical="true"
+	    android:text="heiana"
+	    android:textColor="@color/black"
+	    android:textSize="15sp" />
+    
+    <Button
+	    android:id="@+id/follow_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="match_parent"
+	    android:text="Follow"
+	    android:textColor="@color/white"
+	    android:textSize="12sp"
+	    android:gravity="center"
+	    android:background="@color/blue"
+	    android:paddingLeft="20dp"
+	    android:paddingRight="20dp"
+	    android:minHeight="40dp"
+	    android:minWidth="0dp"
+	    android:layout_margin="15dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_centerVertical="true" />
+    
+    <Button
+	    android:id="@+id/unfollow_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="match_parent"
+	    android:text="Unfollow"
+	    android:textSize="12sp"
+	    android:textColor="@color/text_black"
+	    android:background="@drawable/button_stroke_shape"
+	    android:gravity="center"
+	    android:paddingLeft="20dp"
+	    android:paddingRight="20dp"
+	    android:minHeight="40dp"
+	    android:minWidth="0dp"
+	    android:layout_margin="15dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_centerVertical="true"
+	    android:visibility="gone" />
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_below="@id/avatar"
+        android:background="@color/separator_grey"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+</RelativeLayout>
