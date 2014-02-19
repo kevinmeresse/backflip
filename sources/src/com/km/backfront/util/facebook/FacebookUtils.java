@@ -25,6 +25,7 @@ public class FacebookUtils {
 	public static final String ALBUM_NAME = "Backflip moments";
 	public static final String ALBUMS_URI = "me/albums";
 	
+	
 	public static String getPublishPhotoUri(String albumId) {
 		return albumId + "/photos";
 	}
@@ -54,6 +55,7 @@ public class FacebookUtils {
 			public void onCompleted(GraphUser user, Response response) {
 				if (user != null) {
 					ParseUser.getCurrentUser().put("facebookId", user.getId());
+					FacebookUtils.saveFacebookProfilePicture(user.getId());
 					ParseUser.getCurrentUser().saveInBackground();
 				}
 			}
@@ -95,5 +97,10 @@ public class FacebookUtils {
 			    }
 			  }
 			}).executeAsync();
+	}
+	
+	public static void saveFacebookProfilePicture(String userId) {
+		SaveFacebookProfilePictureAsyncTask task = new SaveFacebookProfilePictureAsyncTask(userId);
+		task.execute();
 	}
 }
