@@ -13,6 +13,7 @@
     <string name="title_activity_display_moment">View moment</string>
     <string name="title_activity_following">I\'m following them</string>
     <string name="title_activity_followers">They\'re following me</string>
+    <string name="title_activity_manage_notif">Manage notifications</string>
     <string name="action_settings">Settings</string>
     <string name="menu_feed">Feed</string>
     <string name="menu_camera">New moment</string>
@@ -35,6 +36,7 @@
     <string name="profile_top_bar_title">Profile</string>
     <string name="following_top_bar_title">I\'m following them</string>
     <string name="followers_top_bar_title">They\'re following me</string>
+    <string name="manage_notif_top_bar_title">Manage notifications</string>
     <string name="facebook_text">Facebook</string>
     <string name="twitter_text">Twitter</string>
     <string name="instagram_text">Instagram</string>

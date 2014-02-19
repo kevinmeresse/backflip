@@ -6,12 +6,15 @@ import com.km.backfront.model.Follow;
 import com.km.backfront.model.Like;
 import com.km.backfront.model.Moment;
 import com.km.backfront.model.Report;
+import com.km.backfront.ui.MainActivity;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class BackfrontApplication extends Application {
 
@@ -31,9 +34,14 @@ public class BackfrontApplication extends Application {
 		 * Fill in this section with your Parse credentials
 		 */
 		Parse.initialize(this, "ZvtTmUReSlI8EzAK6pJ7zalVxLjTAw5ehzyJPBnc", "o6p2Iyv3L7BtSgYJVhlnH1oiBLgmLYTq8BLAfNS4");
+		
+		PushService.setDefaultPushCallback(this, MainActivity.class);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
+		
 		ParseFacebookUtils.initialize("198320220368270");
 		ParseTwitterUtils.initialize("ccGg382Q7O8A6YmK3T27Q", "mnL7vbiajkrYRGfTso6sESdvlttPJVZ77iZkuvJG2hk");
 
+		
 		/*
 		 * This app lets an anonymous user create and save photos of meals
 		 * they've eaten. An anonymous user is a user that can be created

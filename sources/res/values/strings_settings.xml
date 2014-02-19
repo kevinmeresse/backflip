@@ -9,7 +9,7 @@
     <string name="settings_problem">Report a problem</string>
     <string name="settings_rate">Rate the app</string>
     <string name="settings_logout">Log out</string>
-    <string name="settings_signup">Sign up</string>
+    <string name="settings_signup">Sign up / Login</string>
     <string name="settings_general">General</string>
 
 </resources>

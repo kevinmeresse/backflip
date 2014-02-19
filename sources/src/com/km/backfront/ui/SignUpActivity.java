@@ -115,6 +115,8 @@ public class SignUpActivity extends Activity {
     	currentUser.setUsername(usernameView.getText().toString());
         currentUser.setPassword(passwordView.getText().toString());
         currentUser.setEmail(emailView.getText().toString());
+        currentUser.put("notifyFollow", true);
+        currentUser.put("notifyLike", true);
         // Call the Parse signup method
         currentUser.saveInBackground(new SaveCallback() {
 

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
 import com.km.backfront.R;
@@ -78,14 +79,19 @@ public class LoginActivity extends Activity {
 
           @Override
           public void done(ParseUser user, ParseException e) {
-            dlg.dismiss();
-            if (e != null) {
-              // Show the error message
-              Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            } else {
-            	setResult(Activity.RESULT_OK);
-            	finish();
-            }
+        	  // Link this user to the device installation for Push Notifications
+        	  ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        	  installation.put("user", user);
+        	  installation.saveInBackground();
+        	  
+        	  dlg.dismiss();
+        	  if (e != null) {
+        		  // Show the error message
+        		  Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        	  } else {
+        		  setResult(Activity.RESULT_OK);
+        		  finish();
+        	  }
           }
         });
       }

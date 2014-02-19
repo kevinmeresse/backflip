@@ -24,6 +24,7 @@ public class SettingsActivity extends FragmentActivity {
 	private TableRow settingsProfile;
 	private TableRow settingsFollowers;
 	private TableRow settingsFollowing;
+	private TableRow settingsNotifications;
 	private TableRow settingsLogout;
 	private TableRow settingsSignup;
 	
@@ -43,6 +44,7 @@ public class SettingsActivity extends FragmentActivity {
 		settingsProfile = (TableRow) findViewById(R.id.settings_profile);
 		settingsFollowers = (TableRow) findViewById(R.id.settings_followers);
 		settingsFollowing = (TableRow) findViewById(R.id.settings_following);
+		settingsNotifications = (TableRow) findViewById(R.id.settings_notifications);
 		settingsLogout = (TableRow) findViewById(R.id.settings_logout);
 		settingsSignup = (TableRow) findViewById(R.id.settings_signup);
 		
@@ -93,6 +95,16 @@ public class SettingsActivity extends FragmentActivity {
 		    public void onClick(View v) {
 		    	if (userLoggedIn()) {
 		    		Intent intent = new Intent(v.getContext(), FollowingActivity.class);
+		    		startActivity(intent);
+		    	}
+		    }
+		});
+		
+		// Action: Following
+		settingsNotifications.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	if (userLoggedIn()) {
+		    		Intent intent = new Intent(v.getContext(), ManageNotificationsActivity.class);
 		    		startActivity(intent);
 		    	}
 		    }
