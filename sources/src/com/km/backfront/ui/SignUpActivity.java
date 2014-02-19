@@ -105,9 +105,8 @@ public class SignUpActivity extends Activity {
         ParseUser currentUser = ParseUser.getCurrentUser();
     	try {
 			currentUser.save();
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
         
         // Set up a new Parse user
@@ -118,21 +117,28 @@ public class SignUpActivity extends Activity {
         currentUser.put("notifyFollow", true);
         currentUser.put("notifyLike", true);
         // Call the Parse signup method
-        currentUser.saveInBackground(new SaveCallback() {
-
-          @Override
-          public void done(ParseException e) {
-            dlg.dismiss();
-            if (e != null) {
-            	// Show the error message
-            	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
-            	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
-            } else {
-            	setResult(Activity.RESULT_OK);
-            	finish();
-            }
-          }
-        });
+        try {
+	        currentUser.saveInBackground(new SaveCallback() {
+	
+	          @Override
+	          public void done(ParseException e) {
+	            dlg.dismiss();
+	            if (e != null) {
+	            	// Show the error message
+	            	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
+	            	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
+	            } else {
+	            	setResult(Activity.RESULT_OK);
+	            	finish();
+	            }
+	          }
+	        });
+        } catch (Exception e) {
+        	dlg.dismiss();
+        	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
+        	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
+        	e.printStackTrace();
+        }
       }
     });
   }
