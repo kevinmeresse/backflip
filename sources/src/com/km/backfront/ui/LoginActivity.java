@@ -79,16 +79,17 @@ public class LoginActivity extends Activity {
 
           @Override
           public void done(ParseUser user, ParseException e) {
-        	  // Link this user to the device installation for Push Notifications
-        	  ParseInstallation installation = ParseInstallation.getCurrentInstallation();
-        	  installation.put("user", user);
-        	  installation.saveInBackground();
-        	  
+
         	  dlg.dismiss();
         	  if (e != null) {
         		  // Show the error message
         		  Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
         	  } else {
+        		// Link this user to the device installation for Push Notifications
+            	  ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+            	  installation.put("user", user);
+            	  installation.saveInBackground();
+            	  // Return
         		  setResult(Activity.RESULT_OK);
         		  finish();
         	  }
