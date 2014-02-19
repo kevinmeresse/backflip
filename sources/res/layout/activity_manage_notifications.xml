@@ -76,8 +76,7 @@
         android:textColor="@color/text_black"
         android:textOn="YES"
         android:textOff="NO"
-        android:checked="true"
-        android:button="@drawable/backfliptheme_btn_toggle_holo_light" />
+        android:checked="true" />
     
     <TextView 
         android:id="@+id/like_toggle_text"
@@ -103,7 +102,6 @@
         android:textColor="@color/text_black"
         android:textOn="YES"
         android:textOff="NO"
-        android:checked="true"
-        android:button="@drawable/backfliptheme_btn_toggle_holo_light" />
+        android:checked="true" />
 
 </RelativeLayout>

@@ -222,11 +222,11 @@ public class MainActivity extends FragmentActivity {
     		    public void onClick(View v) {
     		    	// Unlike
     		    	if (moment.isLiked()) {
-    		    		momentLikeView.setImageResource(R.drawable.icon_love);
+    		    		momentLikeView.setImageResource(R.drawable.icon_like);
     		    		unlikeMoment();
     		    	// Like
     		    	} else {
-	    		    	momentLikeView.setImageResource(R.drawable.icon_love_red);
+	    		    	momentLikeView.setImageResource(R.drawable.icon_like_red);
 	    		    	likeMoment();
     		    	}
     		    }
@@ -329,7 +329,7 @@ public class MainActivity extends FragmentActivity {
 	                				if (e == null) {
 	                					updateLikeCount();
 	                				} else {
-	                					momentLikeView.setImageResource(R.drawable.icon_love_red);
+	                					momentLikeView.setImageResource(R.drawable.icon_like_red);
 	            						Toast.makeText(
 	            								getActivity().getApplicationContext(),
 	            								"Error saving: " + e.getMessage(),
@@ -358,7 +358,7 @@ public class MainActivity extends FragmentActivity {
 					if (e == null) {
 						updateLikeCount();
 					} else {
-						momentLikeView.setImageResource(R.drawable.icon_love);
+						momentLikeView.setImageResource(R.drawable.icon_like);
 						Toast.makeText(
 								getActivity().getApplicationContext(),
 								"Error saving: " + e.getMessage(),
@@ -377,10 +377,10 @@ public class MainActivity extends FragmentActivity {
 	            public void done(List<Like> likes, ParseException e) {
 	                if (e == null) {
 	                	if (likes.size() > 0) {
-	                		momentLikeView.setImageResource(R.drawable.icon_love_red);
+	                		momentLikeView.setImageResource(R.drawable.icon_like_red);
 	                		moment.isLiked(true);
 	                	} else {
-	                		momentLikeView.setImageResource(R.drawable.icon_love);
+	                		momentLikeView.setImageResource(R.drawable.icon_like);
 	                		moment.isLiked(false);
 	                	}
 	                } else {

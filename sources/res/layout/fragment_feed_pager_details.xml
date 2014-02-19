@@ -45,8 +45,8 @@
         android:id="@+id/moment_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_love"
-        android:layout_gravity="center"
+        android:src="@drawable/icon_like"
+        android:layout_gravity="center|right"
         android:contentDescription="@string/like_button_description"
         android:background="@null"
         android:visibility="invisible" />

@@ -30,8 +30,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_centerInParent="true"
 		    android:src="@drawable/offline_moon_sad"
-		    style="?android:attr/borderlessButtonStyle"
-        	android:background="@null" />
+		    android:background="@null" />
         <TextView
             android:id="@+id/feed_offline_text1"
 	        android:layout_width="wrap_content"
@@ -78,7 +77,6 @@
 		    android:contentDescription="@string/menu_feed"
 		    android:gravity="center"
 		    android:layout_weight="1"
-		    style="?android:attr/borderlessButtonStyle"
 		    android:background="@color/black" />
 	    
 	    <TextView
@@ -94,7 +92,6 @@
 		    android:contentDescription="@string/menu_camera"
 		    android:gravity="center"
 		    android:layout_weight="1"
-		    style="?android:attr/borderlessButtonStyle"
 		    android:background="@color/dark_grey" />
 	    
 	    <TextView
@@ -110,7 +107,6 @@
 		    android:contentDescription="@string/menu_settings"
 		    android:gravity="center"
 		    android:layout_weight="1"
-		    style="?android:attr/borderlessButtonStyle"
 		    android:background="@color/dark_grey" />
 	
 	</LinearLayout>

@@ -219,7 +219,7 @@ public class ShareMomentFragment extends Fragment {
 				public void done(ParseException e) {
 					if (ParseFacebookUtils.isLinked(ParseUser.getCurrentUser())) {
 						FacebookUtils.saveUserId();
-    					// Request permission to post on Facebook
+						// Request permission to post on Facebook
     					ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest(getActivity(), Arrays.asList(Permissions.Extended.PUBLISH_STREAM, Permissions.User.PHOTOS)));
     					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
     					Log.d(TAG, "Woohoo, user logged in with Facebook!");
