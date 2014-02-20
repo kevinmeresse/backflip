@@ -22,136 +22,151 @@ public class SignUpActivity extends Activity {
 	
 	protected static final String TAG = "SignUpActivity";
 	
-  // UI references.
-  private EditText usernameView;
-  private EditText passwordView;
-  private EditText emailView;
+	// UI references.
+	private EditText usernameView;
+	private EditText passwordView;
+	private EditText emailView;
   
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
     
-    this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+		// Remove the title bar
+		this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
 
-    setContentView(R.layout.activity_signup);
+		// Set the layout
+		setContentView(R.layout.activity_signup);
 
-    // Set up the signup form.
-    usernameView = (EditText) findViewById(R.id.signup_form_username);
-    passwordView = (EditText) findViewById(R.id.signup_form_password);
-    emailView = (EditText) findViewById(R.id.signup_form_email);
+		// Get the view objects
+		usernameView = (EditText) findViewById(R.id.signup_form_username);
+		passwordView = (EditText) findViewById(R.id.signup_form_password);
+		emailView = (EditText) findViewById(R.id.signup_form_email);
     
-    // Set up the login button click handler
-    findViewById(R.id.signup_top_bar_login).setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-        	Intent intent = new Intent(v.getContext(), LoginActivity.class);
-	    	startActivityForResult(intent, 0);
-        }
-    });
+		// Action: go to login screen
+		findViewById(R.id.signup_top_bar_login).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), LoginActivity.class);
+				startActivityForResult(intent, 0);
+			}
+		});
     
-    // Set up the link to the Terms Of Service
-    findViewById(R.id.signup_tos_link).setOnClickListener(new View.OnClickListener() {
-        public void onClick(View v) {
-        	Intent intent = new Intent(v.getContext(), TosActivity.class);
-	    	startActivityForResult(intent, 0);
-        }
-    });
+		// Action: go to the Terms Of Service screen
+		findViewById(R.id.signup_tos_link).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), TosActivity.class);
+				startActivityForResult(intent, 0);
+			}
+		});
     
-    // Set up the submit button click handler
-    findViewById(R.id.signup_button).setOnClickListener(new View.OnClickListener() {
-      public void onClick(View view) {
+		// Action: sign up
+		findViewById(R.id.signup_button).setOnClickListener(new View.OnClickListener() {
+			public void onClick(View view) {
 
-        // Validate the sign up data
-        boolean validationError = false;
-        StringBuilder validationErrorMessage =
-            new StringBuilder(getResources().getString(R.string.error_intro));
-        if (isEmpty(usernameView)) {
-          validationError = true;
-          validationErrorMessage.append(getResources().getString(R.string.error_blank_username));
-        }
-        if (isEmpty(passwordView)) {
-          if (validationError) {
-            validationErrorMessage.append(getResources().getString(R.string.error_join));
-          }
-          validationError = true;
-          validationErrorMessage.append(getResources().getString(R.string.error_blank_password));
-        }
-        if (isEmpty(emailView)) {
-            if (validationError) {
-              validationErrorMessage.append(getResources().getString(R.string.error_join));
-            }
-            validationError = true;
-            validationErrorMessage.append(getResources().getString(R.string.error_blank_email));
-        } else if (!Utils.isValidEmailAddress(emailView.getText().toString())) {
-        	if (validationError) {
-        		validationErrorMessage.append(getResources().getString(R.string.error_join));
-        	}
-        	validationError = true;
-            validationErrorMessage.append(getResources().getString(R.string.error_wrong_email));
-        }
-        validationErrorMessage.append(getResources().getString(R.string.error_end));
+				// Validate the sign up data
+				boolean validationError = false;
+				StringBuilder validationErrorMessage = new StringBuilder(getResources().getString(R.string.error_intro));
+				
+				// Check username
+				if (isEmpty(usernameView)) {
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_blank_username));
+				} else if (!Utils.isUsernameLongEnough(usernameView.getText().toString())) {
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_short_username));
+				} else if (!Utils.isAlphanumeric(usernameView.getText().toString())) {
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_alphanumeric_username));
+				}
+				
+				// Check password
+				if (isEmpty(passwordView)) {
+					if (validationError) {
+						validationErrorMessage.append(getResources().getString(R.string.error_join));
+					}
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_blank_password));
+				}
+				
+				// Check email
+				if (isEmpty(emailView)) {
+					if (validationError) {
+						validationErrorMessage.append(getResources().getString(R.string.error_join));
+					}
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_blank_email));
+				} else if (!Utils.isValidEmailAddress(emailView.getText().toString())) {
+					if (validationError) {
+						validationErrorMessage.append(getResources().getString(R.string.error_join));
+					}
+					validationError = true;
+					validationErrorMessage.append(getResources().getString(R.string.error_wrong_email));
+				}
+				validationErrorMessage.append(getResources().getString(R.string.error_end));
 
-        // If there is a validation error, display the error
-        if (validationError) {
-        	Utils.showToast(SignUpActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG);
-        	return;
-        }
+				// If there is a validation error, display the error
+				if (validationError) {
+					Utils.showToast(SignUpActivity.this, validationErrorMessage.toString(), Toast.LENGTH_LONG);
+					return;
+				}
 
-        // Set up a progress dialog
-        final ProgressDialog dlg = new ProgressDialog(SignUpActivity.this);
-        dlg.setTitle("Please wait.");
-        dlg.setMessage("Signing up.  Please wait.");
-        dlg.show();
+				// Set up a progress dialog
+				final ProgressDialog dlg = new ProgressDialog(SignUpActivity.this);
+				dlg.setTitle("Please wait.");
+				dlg.setMessage("Signing up.  Please wait.");
+				dlg.show();
 
-        ParseUser currentUser = ParseUser.getCurrentUser();
-    	try {
-			currentUser.save();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+				// Transform current Anonymous user into a real user
+				ParseUser currentUser = ParseUser.getCurrentUser();
+				Log.d(TAG, "Current user: " + currentUser.getUsername());
+				try {
+					currentUser.save();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
         
-        // Set up a new Parse user
-        //ParseUser user = new ParseUser();
-    	currentUser.setUsername(usernameView.getText().toString());
-        currentUser.setPassword(passwordView.getText().toString());
-        currentUser.setEmail(emailView.getText().toString());
-        currentUser.put("notifyFollow", true);
-        currentUser.put("notifyLike", true);
-        // Call the Parse signup method
-        try {
-	        currentUser.saveInBackground(new SaveCallback() {
+				// Set up a new Parse user
+				currentUser.setUsername(usernameView.getText().toString().toLowerCase());
+				currentUser.setPassword(passwordView.getText().toString());
+				currentUser.setEmail(emailView.getText().toString().toLowerCase());
+				currentUser.put("notifyFollow", true);
+				currentUser.put("notifyLike", true);
+				
+				// Call the Parse sign up method
+				try {
+					currentUser.saveInBackground(new SaveCallback() {
 	
-	          @Override
-	          public void done(ParseException e) {
-	            dlg.dismiss();
-	            if (e != null) {
-	            	// Show the error message
-	            	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
-	            	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
-	            } else {
-	            	setResult(Activity.RESULT_OK);
-	            	finish();
-	            }
-	          }
-	        });
-        } catch (Exception e) {
-        	dlg.dismiss();
-        	Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
-        	Utils.showToast(SignUpActivity.this, "Couldn't save user data to server...");
-        	e.printStackTrace();
-        }
-      }
-    });
-  }
+						@Override
+						public void done(ParseException e) {
+							dlg.dismiss();
+							if (e != null) {
+								// Show the error message
+								Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
+								Utils.showToast(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG);
+							} else {
+								setResult(Activity.RESULT_OK);
+								finish();
+							}
+						}
+					});
+				} catch (Exception e) {
+					dlg.dismiss();
+					Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
+					Utils.showToast(SignUpActivity.this, "We couldn't sign you up. Please try again...", Toast.LENGTH_LONG);
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
-  private boolean isEmpty(EditText etText) {
-    if (etText.getText().toString().trim().length() > 0) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+	private boolean isEmpty(EditText etText) {
+		if (etText.getText().toString().trim().length() > 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
   
-  @Override
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK) {
 			setResult(Activity.RESULT_OK);

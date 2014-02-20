@@ -123,7 +123,7 @@
 			        android:paddingBottom="15dp" />
 			</RelativeLayout>
 			<Button
-			    android:id="@+id/signup_button"
+			    android:id="@+id/login_button"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:text="Login"
