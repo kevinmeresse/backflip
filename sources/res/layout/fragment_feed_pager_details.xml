@@ -41,22 +41,72 @@
         android:layout_gravity="top"
         android:src="@drawable/drop_shadow" />
     
-    <ImageButton
-        android:id="@+id/moment_like"
+    
+    <RelativeLayout 
+        android:id="@+id/moment_like_group"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_like"
-        android:layout_gravity="center|right"
-        android:contentDescription="@string/like_button_description"
-        android:background="@null"
-        android:visibility="invisible" />
-    <TextView  
-        android:id="@+id/moment_like_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ff000000"
-        android:textSize="12sp"
-        android:layout_gravity="center" />
+		android:layout_height="fill_parent"
+		android:layout_gravity="right">
+        
+        <ImageButton
+	        android:id="@+id/moment_like"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:src="@drawable/icon_like"
+	        android:contentDescription="@string/like_button_description"
+	        android:background="@null"
+	        android:visibility="invisible" />
+        
+        <ImageView
+	        android:id="@+id/moment_like_box_top"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/like_box_top"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignBottom="@id/moment_like"
+	        android:contentDescription="@string/like_button_description"
+	        android:background="@null"
+	        android:visibility="invisible" />
+        
+        <ImageView
+	        android:id="@+id/moment_like_box_bottom_outside"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/like_box_bottom_outside"
+	        android:layout_alignParentRight="true"
+	        android:layout_below="@id/moment_like"
+	        android:contentDescription="@string/like_button_description"
+	        android:background="@null"
+	        android:visibility="invisible" />
+        
+        <FrameLayout
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+	        android:layout_below="@id/moment_like" >
+	        <ImageButton
+		        android:id="@+id/moment_like_box_bottom_inside"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:src="@drawable/like_box_bottom_inside"
+		        android:contentDescription="@string/like_button_description"
+		        android:background="@null"
+		        android:visibility="invisible" />
+	        <TextView  
+		        android:id="@+id/moment_like_count"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="#ffffffff"
+		        android:textSize="12sp"
+		        android:layout_gravity="center" />
+        </FrameLayout>
+        
+    </RelativeLayout>
+    
+    
+    
     
     <ImageButton
         android:id="@+id/moment_more"

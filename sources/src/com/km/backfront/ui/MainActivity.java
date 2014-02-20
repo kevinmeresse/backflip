@@ -1,12 +1,8 @@
 package com.km.backfront.ui;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -18,7 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 //import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+//import android.support.v4.view.ViewPager;
 import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,19 +39,20 @@ import com.km.backfront.ui.vertical.FragmentStatePagerAdapter;
 import com.km.backfront.ui.vertical.VerticalViewPager;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.Utils;
+import com.parse.CountCallback;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 public class MainActivity extends FragmentActivity {
+	
+	private static final String TAG = "MainActivity";
 	
 	MyAdapter mAdapter;
     VerticalViewPager mPager;
@@ -172,6 +169,9 @@ public class MainActivity extends FragmentActivity {
         private TextView momentLikeCount;
         private PopupMenu popup;
         private ImageView momentPicked;
+        private ImageView momentLikeBoxTop;
+        private ImageView momentLikeBoxBottomOutside;
+        private ImageButton momentLikeBoxBottomInside;
 
         /**
          * Create a new instance of CountingFragment, providing "num"
@@ -220,6 +220,9 @@ public class MainActivity extends FragmentActivity {
             momentMoreButton = (ImageButton) v.findViewById(R.id.moment_more);
             momentLikeCount = (TextView) v.findViewById(R.id.moment_like_count);
             momentPicked = (ImageView) v.findViewById(R.id.moment_picked);
+            momentLikeBoxTop = (ImageView) v.findViewById(R.id.moment_like_box_top);
+            momentLikeBoxBottomOutside = (ImageView) v.findViewById(R.id.moment_like_box_bottom_outside);
+            momentLikeBoxBottomInside = (ImageButton) v.findViewById(R.id.moment_like_box_bottom_inside);
             
             // Action: Click on LIKE
             momentLikeView.setOnClickListener(new View.OnClickListener() {
@@ -343,7 +346,7 @@ public class MainActivity extends FragmentActivity {
 	                		});
 	                	}
 	                } else {
-	                    Log.d("backfront", "Error: " + e.getMessage());
+	                    Log.d(TAG, "Error: " + e.getMessage());
 	                }
 	            }
 	        });
@@ -377,10 +380,10 @@ public class MainActivity extends FragmentActivity {
         	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
         	query1.whereEqualTo("moment", moment);
         	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-	    	query1.findInBackground(new FindCallback<Like>() {
-	            public void done(List<Like> likes, ParseException e) {
+        	query1.countInBackground(new CountCallback() {
+	            public void done(int count, ParseException e) {
 	                if (e == null) {
-	                	if (likes.size() > 0) {
+	                	if (count > 0) {
 	                		momentLikeView.setImageResource(R.drawable.icon_like_red);
 	                		moment.isLiked(true);
 	                	} else {
@@ -388,23 +391,29 @@ public class MainActivity extends FragmentActivity {
 	                		moment.isLiked(false);
 	                	}
 	                } else {
-	                    Log.d("backfront", "Error: " + e.getMessage());
+	                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
 	                }
 	            }
 	        });
         	
         	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
         	query.whereEqualTo("moment", moment);
-	    	query.findInBackground(new FindCallback<Like>() {
-	            public void done(List<Like> likes, ParseException e) {
+	    	query.countInBackground(new CountCallback() {
+	            public void done(int count, ParseException e) {
 	                if (e == null) {
-	                	if (likes.size() > 0) {
-	                		momentLikeCount.setText(likes.size()+"");
+	                	if (count > 0) {
+	                		momentLikeCount.setText(count+"");
+	                		momentLikeBoxTop.setVisibility(View.VISIBLE);
+	                		momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+	                		momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
 	                	} else {
 	                		momentLikeCount.setText("");
+	                		momentLikeBoxTop.setVisibility(View.INVISIBLE);
+	                		momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+	                		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
 	                	}
 	                } else {
-	                    Log.d("backfront", "Error: " + e.getMessage());
+	                    Log.d(TAG, "Error: " + e.getMessage());
 	                }
 	            }
 	        });
@@ -450,11 +459,11 @@ public class MainActivity extends FragmentActivity {
 	
 	public void updateFeed() {
 		if (!Utils.hasConnection(this)) {
-			Log.d("backfront", "No internet connection...");
+			Log.d(TAG, "No internet connection...");
             feedLoading.setVisibility(View.INVISIBLE);
             feedOffline.setVisibility(View.VISIBLE);
 		} else {
-			Log.d("backfront", "Internet connection found :-)");
+			Log.d(TAG, "Internet connection found :-)");
 			
 			// Sub query for all moments from following
 			ParseQuery<Follow> innerQuery = ParseQuery.getQuery(Follow.class);
@@ -483,14 +492,14 @@ public class MainActivity extends FragmentActivity {
 	    	mainQuery.findInBackground(new FindCallback<Moment>() {
 	            public void done(List<Moment> momentList, ParseException e) {
 	                if (e == null) {
-	                	Log.d("backfront", "Retrieved " + momentList.size() + " moments");
+	                	Log.d(TAG, "Retrieved " + momentList.size() + " moments");
 	                	moments = momentList;
 	                    mAdapter.setSize(moments.size());
 	                    mAdapter.notifyDataSetChanged();
 	                    mPager.setCurrentItem(0);
 	                    feedLoading.setVisibility(View.INVISIBLE);
 	                } else {
-	                    Log.d("backfront", "Error: " + e.getMessage());
+	                    Log.e(TAG, "Error: " + e.getMessage());
 	                    feedLoading.setVisibility(View.INVISIBLE);
 	                    feedOffline.setVisibility(View.VISIBLE);
 	                }
