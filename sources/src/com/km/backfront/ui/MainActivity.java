@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.km.backfront.R;
+import com.km.backfront.model.Follow;
 import com.km.backfront.model.Like;
 import com.km.backfront.model.Moment;
 import com.km.backfront.model.Report;
@@ -160,7 +162,7 @@ public class MainActivity extends FragmentActivity {
         private static final String IMAGE_POSITION = "imgPos";
 		private static final String TAG = "MomentFragment";
 		private Moment moment;
-        private ParseImageView imageBadPreview;
+		private ParseImageView imageBadPreview;
         private ParseImageView imageView;
         private TextView momentAuthorView;
         private TextView momentCaptionView;
@@ -169,6 +171,7 @@ public class MainActivity extends FragmentActivity {
         private ImageButton momentMoreButton;
         private TextView momentLikeCount;
         private PopupMenu popup;
+        private ImageView momentPicked;
 
         /**
          * Create a new instance of CountingFragment, providing "num"
@@ -216,6 +219,7 @@ public class MainActivity extends FragmentActivity {
             momentLikeView = (ImageButton) v.findViewById(R.id.moment_like);
             momentMoreButton = (ImageButton) v.findViewById(R.id.moment_more);
             momentLikeCount = (TextView) v.findViewById(R.id.moment_like_count);
+            momentPicked = (ImageView) v.findViewById(R.id.moment_picked);
             
             // Action: Click on LIKE
             momentLikeView.setOnClickListener(new View.OnClickListener() {
@@ -437,6 +441,9 @@ public class MainActivity extends FragmentActivity {
 	            } else {
 	            	momentCreatedView.setText(Utils.getTimeFromDateToNow(moment.getCreatedAt()));
 	            }
+	            if (moment.getIsFavorite()) {
+	            	momentPicked.setVisibility(View.VISIBLE);
+	            }
             }
         }
     }
@@ -448,10 +455,32 @@ public class MainActivity extends FragmentActivity {
             feedOffline.setVisibility(View.VISIBLE);
 		} else {
 			Log.d("backfront", "Internet connection found :-)");
-	    	ParseQuery<Moment> query = ParseQuery.getQuery(Moment.class);
-	    	query.include("author");
-	        query.orderByDescending("createdAt");
-	        query.findInBackground(new FindCallback<Moment>() {
+			
+			// Sub query for all moments from following
+			ParseQuery<Follow> innerQuery = ParseQuery.getQuery(Follow.class);
+			innerQuery.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+	    	ParseQuery<Moment> queryFollowers = ParseQuery.getQuery(Moment.class);
+	    	queryFollowers.whereMatchesKeyInQuery("author", "toUser", innerQuery);
+	    	
+	    	// Sub query for all Staff Picks (favorites)
+	    	ParseQuery<Moment> queryPicks = ParseQuery.getQuery(Moment.class);
+	    	queryPicks.whereEqualTo("isFavorite", true);
+	    	
+	    	// Sub query for all moments from current user
+	    	ParseQuery<Moment> queryMine = ParseQuery.getQuery(Moment.class);
+	    	queryMine.whereEqualTo("author", ParseUser.getCurrentUser());
+	    	
+	    	// Create main query: moments from following OR Staff Picks OR me
+	    	List<ParseQuery<Moment>> queries = new ArrayList<ParseQuery<Moment>>();
+	    	queries.add(queryFollowers);
+	    	queries.add(queryPicks);
+	    	queries.add(queryMine);
+	    	
+	    	// Execute query
+	    	ParseQuery<Moment> mainQuery = ParseQuery.or(queries);
+	    	mainQuery.include("author");
+	    	mainQuery.orderByDescending("createdAt");
+	    	mainQuery.findInBackground(new FindCallback<Moment>() {
 	            public void done(List<Moment> momentList, ParseException e) {
 	                if (e == null) {
 	                	Log.d("backfront", "Retrieved " + momentList.size() + " moments");

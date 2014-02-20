@@ -68,57 +68,68 @@
         android:background="@null"
         android:visibility="invisible" />
     
-    <TableLayout
-		android:layout_width="wrap_content"
+    <RelativeLayout 
+        android:id="@+id/moment_details"
+        android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_gravity="top|left"
 		android:padding="7dp"
-		android:layout_gravity="top|left" >
-    	<TableRow>
-		    <TextView  
-		        android:id="@+id/moment_author"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textColor="#fff"
-		        android:textSize="15sp"
-		        android:textStyle="bold"
-		        android:shadowColor="@color/transparent_grey"
-		        android:shadowDx="0.5"
-		        android:shadowDy="1"
-		        android:shadowRadius="1.0"
-		        android:paddingBottom="4dp" />
-	    </TableRow>
-        <TableRow>
-		    <View
-				android:layout_height="1dp"
-				android:background="#44ffffff" />
-	    </TableRow>
-	    <TableRow>
-		    <TextView  
-		        android:id="@+id/moment_caption"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textColor="#fff"
-		        android:textSize="12sp"
-		        android:shadowColor="@color/transparent_grey"
-		        android:shadowDx="0.5"
-		        android:shadowDy="1"
-		        android:shadowRadius="1.0"
-		        android:paddingTop="2dp"
-		        android:visibility="gone" />
-	    </TableRow>
-	    <TableRow>
-		    <TextView  
-		        android:id="@+id/moment_created"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textColor="#eee"
-		        android:textSize="10sp"
-		        android:shadowColor="@color/transparent_grey"
-		        android:shadowDx="0.5"
-		        android:shadowDy="1"
-		        android:shadowRadius="1.0"
-		        android:paddingTop="2dp" />
-	    </TableRow>
-   	</TableLayout>
+		android:layout_marginRight="70dp" >
+        <TextView  
+	        android:id="@+id/moment_author"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignParentLeft="true"
+	        android:textColor="#fff"
+	        android:textSize="15sp"
+	        android:textStyle="bold"
+	        android:shadowColor="@color/transparent_grey"
+	        android:shadowDx="0.5"
+	        android:shadowDy="1"
+	        android:shadowRadius="1.0"
+	        android:paddingBottom="4dp" />
+        <ImageView
+	        android:id="@+id/moment_picked"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/moment_author"
+	        android:src="@drawable/icon_picked"
+	        android:visibility="invisible"
+	        android:layout_marginLeft="10dp" />
+        <TextView
+	        android:id="@+id/line"
+	        android:layout_width="fill_parent"
+	        android:layout_height="1px"
+	        android:layout_below="@id/moment_picked"
+	        android:background="@color/separator_grey"
+	        android:layout_marginTop="5dp"
+	        android:visibility="gone" />
+        <TextView  
+	        android:id="@+id/moment_caption"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/line"
+	        android:layout_marginTop="2dp"
+	        android:textColor="#fff"
+	        android:textSize="12sp"
+	        android:shadowColor="@color/transparent_grey"
+	        android:shadowDx="0.5"
+	        android:shadowDy="1"
+	        android:shadowRadius="1.0"
+	        android:visibility="gone" />
+        <TextView  
+	        android:id="@+id/moment_created"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@id/moment_caption"
+	        android:layout_marginTop="2dp"
+	        android:textColor="#eee"
+	        android:textSize="10sp"
+	        android:shadowColor="@color/transparent_grey"
+	        android:shadowDx="0.5"
+	        android:shadowDy="1"
+	        android:shadowRadius="1.0" />
+    </RelativeLayout>
 
 </FrameLayout>
