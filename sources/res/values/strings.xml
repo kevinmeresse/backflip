@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Backfront</string>
+    <string name="app_name">Backflip</string>
     <string name="app_id">198320220368270</string>
     <string name="title_activity_new_moment">New moment</string>
     <string name="title_activity_settings">Settings</string>
@@ -41,6 +41,6 @@
     <string name="twitter_text">Twitter</string>
     <string name="instagram_text">Instagram</string>
     <string name="path_text">Path</string>
-    <string name="photo_album_name">Backfront</string>
+    <string name="photo_album_name">Backflip</string>
 
 </resources>
