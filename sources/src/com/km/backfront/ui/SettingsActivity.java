@@ -73,7 +73,7 @@ public class SettingsActivity extends FragmentActivity {
 		// Action: Profile
 		settingsProfile.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	if (userLoggedIn()) {
+		    	if (Utils.userLoggedIn(v.getContext())) {
 		    		Intent intent = new Intent(v.getContext(), ProfileActivity.class);
 		    		startActivity(intent);
 		    	}
@@ -83,7 +83,7 @@ public class SettingsActivity extends FragmentActivity {
 		// Action: Followers
 		settingsFollowers.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	if (userLoggedIn()) {
+		    	if (Utils.userLoggedIn(v.getContext())) {
 		    		Intent intent = new Intent(v.getContext(), FollowersActivity.class);
 		    		startActivity(intent);
 		    	}
@@ -93,7 +93,7 @@ public class SettingsActivity extends FragmentActivity {
 		// Action: Following
 		settingsFollowing.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	if (userLoggedIn()) {
+		    	if (Utils.userLoggedIn(v.getContext())) {
 		    		Intent intent = new Intent(v.getContext(), FollowingActivity.class);
 		    		startActivity(intent);
 		    	}
@@ -103,7 +103,7 @@ public class SettingsActivity extends FragmentActivity {
 		// Action: Following
 		settingsNotifications.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	if (userLoggedIn()) {
+		    	if (Utils.userLoggedIn(v.getContext())) {
 		    		Intent intent = new Intent(v.getContext(), ManageNotificationsActivity.class);
 		    		startActivity(intent);
 		    	}
@@ -139,7 +139,7 @@ public class SettingsActivity extends FragmentActivity {
 		findViewById(R.id.settings_problem).setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	try {
-			    	Intent intent = Intent.parseUri("mailto:support@bckfrnt.co?subject=Backfront - Report a problem", Intent.URI_INTENT_SCHEME);
+			    	Intent intent = Intent.parseUri("mailto:support@bckflp.co?subject=Backflip - Report a problem", Intent.URI_INTENT_SCHEME);
 				    startActivity(intent);
 		    	} catch (URISyntaxException e) {
 		    		Utils.showToast(SettingsActivity.this, "Sorry, something went wrong...");
@@ -161,14 +161,6 @@ public class SettingsActivity extends FragmentActivity {
 		});
     }
     
-    public boolean userLoggedIn() {
-    	if (ParseUser.getCurrentUser() != null && !Utils.isEmptyString(ParseUser.getCurrentUser().getEmail())) {
-    		return true;
-    	}
-    	Intent intent = new Intent(this, SignUpActivity.class);
-    	startActivity(intent);
-    	return false;
-    }
     
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -186,8 +178,7 @@ public class SettingsActivity extends FragmentActivity {
     @Override
     protected void onResume() {
     	// Check if user is logged in
-		ParseUser currentUser = ParseUser.getCurrentUser();
-		if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
+		if (ParseUser.getCurrentUser() != null) {
 			settingsSignup.setVisibility(View.GONE);
 			settingsLogout.setVisibility(View.VISIBLE);
 		} else {

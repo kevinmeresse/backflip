@@ -41,6 +41,7 @@ import android.widget.TextView;
 public class ShareMomentFragment extends Fragment {
 	
 	protected static final String TAG = "ShareMomentFragment";
+	protected static final int INSTANT_SHARE_REQUEST_CODE = 75;
 	protected static final int FACEBOOK_REQUEST_CODE = 76;
 	protected static final int TWITTER_REQUEST_CODE = 77;
 	protected static final int INSTAGRAM_REQUEST_CODE = 78;
@@ -111,13 +112,12 @@ public class ShareMomentFragment extends Fragment {
 		    	if (!Utils.hasConnection((NewMomentActivity) getActivity())) {
 		    		Utils.showToast(getActivity(), "No internet connection...");
 		    	} else {
-		    		// Check if user is anonymous
-		    		ParseUser currentUser = ParseUser.getCurrentUser();
-		    		if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
+		    		// Check if user is logged in
+		    		if (ParseUser.getCurrentUser() != null) {
 		    			shareMoment();
 		    		} else {
 		    			Intent intent = new Intent(v.getContext(), SignUpActivity.class);
-				    	startActivityForResult(intent, 0);
+				    	startActivityForResult(intent, INSTANT_SHARE_REQUEST_CODE);
 		    		}
 		    	}
 		    }
@@ -158,24 +158,32 @@ public class ShareMomentFragment extends Fragment {
     	// Action: click on Facebook
     	shareFacebookIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	toggleFacebookShare(shareOnFacebook);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		toggleFacebookShare(shareOnFacebook);
+		    	}
 		    }
     	});
     	shareFacebookText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	toggleFacebookShare(shareOnFacebook);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		toggleFacebookShare(shareOnFacebook);
+		    	}
 		    }
     	});
     	
     	// Action: click on Twitter
     	shareTwitterIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	toggleTwitterShare(shareOnTwitter);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		toggleTwitterShare(shareOnTwitter);
+		    	}
 		    }
     	});
     	shareTwitterText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	toggleTwitterShare(shareOnTwitter);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		toggleTwitterShare(shareOnTwitter);
+		    	}
 		    }
     	});
     	
@@ -194,12 +202,16 @@ public class ShareMomentFragment extends Fragment {
     	// Action: click on Path
     	sharePathIcon.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	togglePathShare(shareOnPath);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		togglePathShare(shareOnPath);
+		    	}
 		    }
     	});
     	sharePathText.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
-		    	togglePathShare(shareOnPath);
+		    	if (Utils.userLoggedIn(getActivity())) {
+		    		togglePathShare(shareOnPath);
+		    	}
 		    }
     	});
     	
@@ -298,18 +310,10 @@ public class ShareMomentFragment extends Fragment {
 	
 	private void loginOnPath() {
 		Log.d(TAG, "Clicked on Share on Path.");
-		ParseUser currentUser = ParseUser.getCurrentUser();
-		try {
-			currentUser.save();
-			if (currentUser.get("pathAccessToken") == null) {
-				Intent intent = new Intent(getActivity(), LoginPathActivity.class);
-		    	startActivityForResult(intent, PATH_REQUEST_CODE);
-			}
-		} catch (ParseException e) {
-			togglePathShare(shareOnPath);
-			e.printStackTrace();
+		if (Utils.isEmptyString((String) ParseUser.getCurrentUser().get("pathAccessToken"))) {
+			Intent intent = new Intent(getActivity(), LoginPathActivity.class);
+	    	startActivityForResult(intent, PATH_REQUEST_CODE);
 		}
-		
 	}
 	
 	public void shareMoment() {
@@ -465,9 +469,8 @@ public class ShareMomentFragment extends Fragment {
 				togglePathShare(shareOnPath);
 				Utils.showToast(getActivity(), "Could not connect to Path...");
 			}
-		} else if (resultCode == Activity.RESULT_OK) {
-			ParseUser currentUser = ParseUser.getCurrentUser();
-			if (currentUser != null && currentUser.getEmail() != null && !currentUser.getEmail().isEmpty()) {
+		} else if (requestCode == INSTANT_SHARE_REQUEST_CODE) {
+			if (resultCode == Activity.RESULT_OK && ParseUser.getCurrentUser() != null) {
 				shareMoment();
 			} else {
 				Utils.showToast(getActivity(), "We couldn't sign you in...");

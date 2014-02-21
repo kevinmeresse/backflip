@@ -33,19 +33,14 @@ public class FacebookUtils {
 	public static boolean login(Activity activity, SaveCallback callback) {
 		Log.d(TAG, "Clicked on Share on Facebook.");
     	ParseUser currentUser = ParseUser.getCurrentUser();
-    	try {
-			currentUser.save();
-	    	if (!ParseFacebookUtils.isLinked(currentUser)) {
-	    		Log.d(TAG, "Connecting to Facebook...");
-	    		ParseFacebookUtils.link(currentUser, activity, callback);
-	    		followFriendsInBackground();
-    		} else {
-    			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
-    		}
-    	} catch (ParseException e) {
-			e.printStackTrace();
-			return false;
+    	if (!ParseFacebookUtils.isLinked(currentUser)) {
+    		Log.d(TAG, "Connecting to Facebook...");
+    		ParseFacebookUtils.link(currentUser, activity, callback);
+    		followFriendsInBackground();
+		} else {
+			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
 		}
+    	
     	return true;
 	}
 	

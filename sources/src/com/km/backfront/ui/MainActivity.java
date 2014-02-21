@@ -229,11 +229,9 @@ public class MainActivity extends FragmentActivity {
     		    public void onClick(View v) {
     		    	// Unlike
     		    	if (moment.isLiked()) {
-    		    		momentLikeView.setImageResource(R.drawable.icon_like);
     		    		unlikeMoment();
     		    	// Like
     		    	} else {
-	    		    	momentLikeView.setImageResource(R.drawable.icon_like_red);
 	    		    	likeMoment();
     		    	}
     		    }
@@ -317,85 +315,92 @@ public class MainActivity extends FragmentActivity {
         	report.saveInBackground();
 	    	
         	// Notify user
-        	Toast.makeText(
-					getActivity().getApplicationContext(),
-					"Your report has been sent. Thank you for your help!",
-					Toast.LENGTH_SHORT).show();
-        }
-        
-        public void unlikeMoment() {
-        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
-        	query1.whereEqualTo("moment", moment);
-        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-	    	query1.findInBackground(new FindCallback<Like>() {
-	            public void done(List<Like> likes, ParseException e) {
-	                if (e == null) {
-	                	if (likes.size() > 0) {
-	                		likes.get(0).deleteInBackground(new DeleteCallback() {
-	                			public void done(ParseException e) {
-	                				if (e == null) {
-	                					updateLikeCount();
-	                				} else {
-	                					momentLikeView.setImageResource(R.drawable.icon_like_red);
-	            						Toast.makeText(
-	            								getActivity().getApplicationContext(),
-	            								"Error saving: " + e.getMessage(),
-	            								Toast.LENGTH_SHORT).show();
-            				     	}
-	                			}
-	                		});
-	                	}
-	                } else {
-	                    Log.d(TAG, "Error: " + e.getMessage());
-	                }
-	            }
-	        });
+        	Utils.showToast(getActivity(), "Your report has been sent. Thank you for your help!", Toast.LENGTH_LONG);
         }
         
         public void likeMoment() {
-        	Like like = new Like();
-	    	like.setFromUser(ParseUser.getCurrentUser());
-	    	like.setMoment(moment);
-	    	
-	    	// Save the like to Parse
-	    	like.saveInBackground(new SaveCallback() {
-
-				@Override
-				public void done(ParseException e) {
-					if (e == null) {
-						updateLikeCount();
-					} else {
-						momentLikeView.setImageResource(R.drawable.icon_like);
-						Toast.makeText(
-								getActivity().getApplicationContext(),
-								"Error saving: " + e.getMessage(),
-								Toast.LENGTH_SHORT).show();
+        	if (Utils.userLoggedIn(getActivity())) {
+        		// Change view to be activated
+        		momentLikeView.setImageResource(R.drawable.icon_like_red);
+        		
+        		// Create like
+	        	Like like = new Like();
+		    	like.setFromUser(ParseUser.getCurrentUser());
+		    	like.setMoment(moment);
+		    	
+		    	// Save the like to Parse
+		    	like.saveInBackground(new SaveCallback() {
+	
+					@Override
+					public void done(ParseException e) {
+						if (e == null) {
+							updateLikeCount();
+						} else {
+							momentLikeView.setImageResource(R.drawable.icon_like);
+							Log.e(TAG, "Error saving: " + e.getMessage());
+						}
 					}
-				}
-
-			});
+	
+				});
+        	}
+        }
+        
+        public void unlikeMoment() {
+        	if (Utils.userLoggedIn(getActivity())) {
+        		// Change view to be deactivated
+        		momentLikeView.setImageResource(R.drawable.icon_like);
+	    		
+        		// Search like and delete it
+	        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
+	        	query1.whereEqualTo("moment", moment);
+	        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+		    	query1.findInBackground(new FindCallback<Like>() {
+		            public void done(List<Like> likes, ParseException e) {
+		                if (e == null) {
+		                	if (likes.size() > 0) {
+		                		likes.get(0).deleteInBackground(new DeleteCallback() {
+		                			public void done(ParseException e) {
+		                				if (e == null) {
+		                					updateLikeCount();
+		                				} else {
+		                					momentLikeView.setImageResource(R.drawable.icon_like_red);
+		                					Log.e(TAG, "Error saving: " + e.getMessage());
+	            				     	}
+		                			}
+		                		});
+		                	}
+		                } else {
+		                	Log.d(TAG, "Error: " + e.getMessage());
+		                }
+		            }
+		        });
+        	}
         }
         
         public void updateLikeCount() {
-        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
-        	query1.whereEqualTo("moment", moment);
-        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-        	query1.countInBackground(new CountCallback() {
-	            public void done(int count, ParseException e) {
-	                if (e == null) {
-	                	if (count > 0) {
-	                		momentLikeView.setImageResource(R.drawable.icon_like_red);
-	                		moment.isLiked(true);
-	                	} else {
-	                		momentLikeView.setImageResource(R.drawable.icon_like);
-	                		moment.isLiked(false);
-	                	}
-	                } else {
-	                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
-	                }
-	            }
-	        });
+        	// Check if current user likes this moment
+        	if (ParseUser.getCurrentUser() != null) {
+	        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
+	        	query1.whereEqualTo("moment", moment);
+	        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+	        	query1.countInBackground(new CountCallback() {
+		            public void done(int count, ParseException e) {
+		                if (e == null) {
+		                	if (count > 0) {
+		                		momentLikeView.setImageResource(R.drawable.icon_like_red);
+		                		moment.isLiked(true);
+		                	} else {
+		                		momentLikeView.setImageResource(R.drawable.icon_like);
+		                		moment.isLiked(false);
+		                	}
+		                } else {
+		                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
+		                }
+		            }
+		        });
+        	}
         	
+        	// Retrieve the number of likes for this moment
         	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
         	query.whereEqualTo("moment", moment);
 	    	query.countInBackground(new CountCallback() {
@@ -413,7 +418,7 @@ public class MainActivity extends FragmentActivity {
 	                		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
 	                	}
 	                } else {
-	                    Log.d(TAG, "Error: " + e.getMessage());
+	                    Log.d(TAG, "Error when counting likes: " + e.getMessage());
 	                }
 	            }
 	        });
@@ -465,26 +470,29 @@ public class MainActivity extends FragmentActivity {
 		} else {
 			Log.d(TAG, "Internet connection found :-)");
 			
-			// Sub query for all moments from following
-			ParseQuery<Follow> innerQuery = ParseQuery.getQuery(Follow.class);
-			innerQuery.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-	    	ParseQuery<Moment> queryFollowers = ParseQuery.getQuery(Moment.class);
-	    	queryFollowers.whereMatchesKeyInQuery("author", "toUser", innerQuery);
-	    	
-	    	// Sub query for all Staff Picks (favorites)
+			// Create main query: moments from following OR Staff Picks OR me
+	    	List<ParseQuery<Moment>> queries = new ArrayList<ParseQuery<Moment>>();
+			
+			// Sub query for all Staff Picks (favorites)
 	    	ParseQuery<Moment> queryPicks = ParseQuery.getQuery(Moment.class);
 	    	queryPicks.whereEqualTo("isFavorite", true);
-	    	
-	    	// Sub query for all moments from current user
-	    	ParseQuery<Moment> queryMine = ParseQuery.getQuery(Moment.class);
-	    	queryMine.whereEqualTo("author", ParseUser.getCurrentUser());
-	    	
-	    	// Create main query: moments from following OR Staff Picks OR me
-	    	List<ParseQuery<Moment>> queries = new ArrayList<ParseQuery<Moment>>();
-	    	queries.add(queryFollowers);
 	    	queries.add(queryPicks);
-	    	queries.add(queryMine);
-	    	
+			
+			ParseUser currentUser = ParseUser.getCurrentUser();
+			if (currentUser != null) {
+				// Sub query for all moments from following
+				ParseQuery<Follow> innerQuery = ParseQuery.getQuery(Follow.class);
+				innerQuery.whereEqualTo("fromUser", currentUser);
+		    	ParseQuery<Moment> queryFollowers = ParseQuery.getQuery(Moment.class);
+		    	queryFollowers.whereMatchesKeyInQuery("author", "toUser", innerQuery);
+		    	queries.add(queryFollowers);
+		    	
+		    	// Sub query for all moments from current user
+		    	ParseQuery<Moment> queryMine = ParseQuery.getQuery(Moment.class);
+		    	queryMine.whereEqualTo("author", currentUser);
+		    	queries.add(queryMine);
+			}
+			
 	    	// Execute query
 	    	ParseQuery<Moment> mainQuery = ParseQuery.or(queries);
 	    	mainQuery.include("author");

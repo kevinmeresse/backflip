@@ -8,8 +8,12 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.km.backfront.ui.SignUpActivity;
+import com.parse.ParseUser;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -162,4 +166,13 @@ public class Utils {
 
 		  return buffer.toByteArray();
 	  }
+	  
+	  public static boolean userLoggedIn(Context context) {
+	    	if (ParseUser.getCurrentUser() != null) {
+	    		return true;
+	    	}
+	    	Intent intent = new Intent(context, SignUpActivity.class);
+	    	context.startActivity(intent);
+	    	return false;
+	    }
 }

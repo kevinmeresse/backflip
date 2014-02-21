@@ -10,8 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 import com.km.backfront.R;
 import com.km.backfront.util.Utils;
 
@@ -115,25 +116,23 @@ public class SignUpActivity extends Activity {
 				dlg.setMessage("Signing up.  Please wait.");
 				dlg.show();
 
-				// Transform current Anonymous user into a real user
+				// Check is user already logged in
 				ParseUser currentUser = ParseUser.getCurrentUser();
-				Log.d(TAG, "Current user: " + currentUser.getUsername());
-				try {
-					currentUser.save();
-				} catch (Exception e) {
-					e.printStackTrace();
+				if (currentUser != null) {
+					ParseUser.logOut();
 				}
         
 				// Set up a new Parse user
-				currentUser.setUsername(usernameView.getText().toString().toLowerCase());
-				currentUser.setPassword(passwordView.getText().toString());
-				currentUser.setEmail(emailView.getText().toString().toLowerCase());
-				currentUser.put("notifyFollow", true);
-				currentUser.put("notifyLike", true);
+				ParseUser newUser = new ParseUser();
+				newUser.setUsername(usernameView.getText().toString().toLowerCase());
+				newUser.setPassword(passwordView.getText().toString());
+				newUser.setEmail(emailView.getText().toString().toLowerCase());
+				newUser.put("notifyFollow", true);
+				newUser.put("notifyLike", true);
 				
 				// Call the Parse sign up method
 				try {
-					currentUser.saveInBackground(new SaveCallback() {
+					newUser.signUpInBackground(new SignUpCallback() {
 	
 						@Override
 						public void done(ParseException e) {
@@ -143,6 +142,11 @@ public class SignUpActivity extends Activity {
 								Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
 								Utils.showToast(SignUpActivity.this, e.getMessage(), Toast.LENGTH_LONG);
 							} else {
+								// Link this user to the device installation for Push Notifications
+								ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+								installation.put("user", ParseUser.getCurrentUser());
+								installation.saveInBackground();
+								// Return
 								setResult(Activity.RESULT_OK);
 								finish();
 							}
