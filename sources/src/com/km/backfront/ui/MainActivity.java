@@ -198,7 +198,9 @@ public class MainActivity extends FragmentActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             int mImageNum = getArguments() != null ? getArguments().getInt(IMAGE_POSITION) : -1;
-            moment = moments.get(mImageNum);
+            if (moments != null) {
+            	moment = moments.get(mImageNum);
+            }
         }
 
         /**

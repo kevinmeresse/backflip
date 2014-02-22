@@ -98,6 +98,16 @@ public class ShareMomentFragment extends Fragment {
     	sharePathIcon = (ImageButton) v.findViewById(R.id.share_path_icon);
     	sharePathText = (TextView) v.findViewById(R.id.share_path_text);
     	
+    	// Check if we still have the picture
+    	if (((NewMomentActivity) getActivity()).getCurrentPhoto() == null) {
+    		Bitmap restoredPic = CacheManager.retrievePicture(getActivity(), "full.jpg");
+    		if (restoredPic != null) {
+    			((NewMomentActivity) getActivity()).setCurrentPhoto(restoredPic);
+    		} else {
+    			getActivity().getSupportFragmentManager().popBackStack("ShareMomentFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    		}
+    	}
+    	
     	// Set the preview image
     	Bitmap momentImageScaled = BitmapHelper.scaleToFitWidth(((NewMomentActivity) getActivity()).getCurrentPhoto(), 200);
     	momentPreview.setImageBitmap(momentImageScaled);
@@ -235,9 +245,11 @@ public class ShareMomentFragment extends Fragment {
     					ParseFacebookUtils.getSession().requestNewPublishPermissions(new NewPermissionsRequest(getActivity(), Arrays.asList(Permissions.Extended.PUBLISH_STREAM, Permissions.User.PHOTOS)));
     					ParseFacebookUtils.saveLatestSessionData(ParseUser.getCurrentUser());
     					Log.d(TAG, "Woohoo, user logged in with Facebook!");
+    					FacebookUtils.followFriendsInBackground();
     				} else {
     					Log.d(TAG, "Aaarggh, NOT logged in with Facebook.");
     					if (e != null) Log.d(TAG, "Error: " + e.getMessage());
+    					e.printStackTrace();
     					toggleFacebookShare(shareOnFacebook);
     				}
 				}

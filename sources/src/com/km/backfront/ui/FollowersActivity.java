@@ -14,6 +14,7 @@ import com.parse.ParseUser;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -66,6 +67,7 @@ public class FollowersActivity extends Activity {
 	}
 	
 	public void fetchFollowers() {
+		Log.d(TAG, "Fetching followers...");
 		// First we build a HashSet (will have a constant access time) with the followed followers
 		final HashSet<String> set = new HashSet<String>();
 		
@@ -79,12 +81,15 @@ public class FollowersActivity extends Activity {
 		query.whereMatchesKeyInQuery("fromUser", "toUser", innerQuery);
 		query.include("fromUser");
 		// Execute the query
+		Log.d(TAG, "Executing nested query...");
 		query.findInBackground(new FindCallback<Follow>() {
 		    public void done(List<Follow> followList, ParseException e) {
+		    	Log.d(TAG, "Found " + followList.size() + " users who follow current user and vice versa.");
 		    	for (Follow f : followList) {
+		    		Log.d(TAG, " - " + f.getFromUser().getUsername());
 		    		set.add(f.getFromUser().getObjectId());
-		    		fetchAndSortAllFollowers(set);
 		    	}
+		    	fetchAndSortAllFollowers(set);
 		    }
 		});
 	}
@@ -97,11 +102,15 @@ public class FollowersActivity extends Activity {
 		query.whereEqualTo("toUser", ParseUser.getCurrentUser());
 		query.include("fromUser");
 		// execute the query
+		Log.d(TAG, "Executing query to get ALL followers...");
 		query.findInBackground(new FindCallback<Follow>() {
 		    public void done(List<Follow> followList, ParseException e) {
+		    	Log.d(TAG, "Found " + followList.size() + " users who follow current user.");
 		    	for (Follow f : followList) {
 		    		ParseUser user = f.getFromUser();
+		    		Log.d(TAG, " - " + user.getUsername());
 		    		if (followedUserIds.contains(user.getObjectId())) {
+		    			Log.d(TAG, "   -----> following back");
 		    			user.put("isFollowed", true);
 		    		}
 		    		users.add(user);

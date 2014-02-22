@@ -36,8 +36,7 @@ public class FacebookUtils {
     	if (!ParseFacebookUtils.isLinked(currentUser)) {
     		Log.d(TAG, "Connecting to Facebook...");
     		ParseFacebookUtils.link(currentUser, activity, callback);
-    		followFriendsInBackground();
-		} else {
+    	} else {
 			Log.d(TAG, "Good news, the user is already linked to a Facebook account.");
 		}
     	
@@ -63,35 +62,35 @@ public class FacebookUtils {
 	}
 	
 	public static void followFriendsInBackground() {
+		Log.d(TAG, "Looking for friends on Facebook...");
 		Request.newMyFriendsRequest(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
 
-			  @Override
-			  public void onCompleted(List<GraphUser> users, Response response) {
-			    if (users != null) {
-			      List<String> friendsList = new ArrayList<String>();
-			      for (GraphUser user : users) {
-			        friendsList.add(user.getId());
-			      }
-
-			      // Construct a ParseUser query that will find friends whose
-			      // facebook IDs are contained in the current user's friend list.
-			      ParseQuery<ParseUser> friendQuery = ParseUser.getQuery();
-			      friendQuery.whereContainedIn("facebookId", friendsList);
-
-			      // findObjects will return a list of ParseUsers that are friends with
-			      // the current user
-			      try {
-					List<ParseUser> friendUsers = friendQuery.find();
-					for (ParseUser friend : friendUsers) {
-						ActivityUtils.follow(ParseUser.getCurrentUser(), friend);
+			@Override
+			public void onCompleted(List<GraphUser> users, Response response) {
+				if (users != null) {
+					List<String> friendsList = new ArrayList<String>();
+					for (GraphUser user : users) {
+						friendsList.add(user.getId());
 					}
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+					// Construct a ParseUser query that will find friends whose
+					// facebook IDs are contained in the current user's friend list.
+					ParseQuery<ParseUser> friendQuery = ParseUser.getQuery();
+					friendQuery.whereContainedIn("facebookId", friendsList);
+
+					// findObjects will return a list of ParseUsers that are friends with
+					// the current user
+					try {
+						List<ParseUser> friendUsers = friendQuery.find();
+						for (ParseUser friend : friendUsers) {
+							ActivityUtils.follow(ParseUser.getCurrentUser(), friend);
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 			    }
-			  }
-			}).executeAsync();
+			}
+		}).executeAsync();
 	}
 	
 	public static void saveFacebookProfilePicture(String userId) {
