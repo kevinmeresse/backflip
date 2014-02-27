@@ -3,12 +3,18 @@ package com.km.backfront.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.km.backfront.model.Follow;
+import com.km.backfront.model.Moment;
 import com.km.backfront.ui.SignUpActivity;
+import com.parse.FindCallback;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import android.app.Activity;
@@ -168,11 +174,48 @@ public class Utils {
 	  }
 	  
 	  public static boolean userLoggedIn(Context context) {
-	    	if (ParseUser.getCurrentUser() != null) {
-	    		return true;
+		  if (ParseUser.getCurrentUser() != null) {
+			  return true;
+		  }
+		  Intent intent = new Intent(context, SignUpActivity.class);
+		  context.startActivity(intent);
+		  return false;
+	  }
+	  
+	  public static void searchMomentsForFeed(int skip, int amount, FindCallback<Moment> callback) {
+		// Create main query: moments from following OR Staff Picks OR me
+	    	List<ParseQuery<Moment>> queries = new ArrayList<ParseQuery<Moment>>();
+			
+			// Sub query for all Staff Picks (favorites)
+	    	ParseQuery<Moment> queryPicks = ParseQuery.getQuery(Moment.class);
+	    	queryPicks.whereEqualTo("isFavorite", true);
+	    	queries.add(queryPicks);
+			
+			ParseUser currentUser = ParseUser.getCurrentUser();
+			if (currentUser != null) {
+				// Sub query for all moments from following
+				ParseQuery<Follow> innerQuery = ParseQuery.getQuery(Follow.class);
+				innerQuery.whereEqualTo("fromUser", currentUser);
+		    	ParseQuery<Moment> queryFollowers = ParseQuery.getQuery(Moment.class);
+		    	queryFollowers.whereMatchesKeyInQuery("author", "toUser", innerQuery);
+		    	queries.add(queryFollowers);
+		    	
+		    	// Sub query for all moments from current user
+		    	ParseQuery<Moment> queryMine = ParseQuery.getQuery(Moment.class);
+		    	queryMine.whereEqualTo("author", currentUser);
+		    	queries.add(queryMine);
+			}
+			
+	    	// Execute query
+	    	ParseQuery<Moment> mainQuery = ParseQuery.or(queries);
+	    	mainQuery.include("author");
+	    	mainQuery.orderByDescending("createdAt");
+	    	if (skip > 0) {
+	    		mainQuery.setSkip(skip);
 	    	}
-	    	Intent intent = new Intent(context, SignUpActivity.class);
-	    	context.startActivity(intent);
-	    	return false;
-	    }
+	    	if (amount > 0) {
+	    		mainQuery.setLimit(amount);
+	    	}
+	    	mainQuery.findInBackground(callback);
+	  }
 }

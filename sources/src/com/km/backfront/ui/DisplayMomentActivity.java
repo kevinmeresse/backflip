@@ -206,6 +206,9 @@ public class DisplayMomentActivity extends Activity {
         } else {
         	momentCreatedView.setText(Utils.getTimeFromDateToNow(moment.getCreatedAt()));
         }
+        if (moment.getIsFavorite()) {
+        	momentPicked.setVisibility(View.VISIBLE);
+        }
 	}
 	
 	public void updateLikeCount() {
