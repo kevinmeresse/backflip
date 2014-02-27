@@ -46,7 +46,8 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 	private ImageButton cameraButton;
 	private ImageButton settingsButton;
 	private RelativeLayout feedOffline;
-	private ImageButton feedOfflineReload;
+	private RelativeLayout refreshAndLoadMore;
+	private RelativeLayout feedMessage;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +65,11 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		feedButton = (ImageButton) findViewById(R.id.menu_feed_button);
 		cameraButton = (ImageButton) findViewById(R.id.menu_add_button);
 		settingsButton = (ImageButton) findViewById(R.id.menu_settings_button);
-		verticalPager = (VerticalViewPager)findViewById(R.id.pager);
+		verticalPager = (VerticalViewPager) findViewById(R.id.pager);
 		flipView = (FlipView) findViewById(R.id.flipview);
 		feedOffline = (RelativeLayout) findViewById(R.id.feed_offline);
-		feedOfflineReload = (ImageButton) findViewById(R.id.feed_offline_pic);
+		refreshAndLoadMore = (RelativeLayout) findViewById(R.id.feed_refresh_load_more);
+		feedMessage = (RelativeLayout) findViewById(R.id.feed_message);
 		
 		// Honeycomb (api lvl 11) or above is required for the FLIP library to work
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -75,7 +77,7 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		}
 		
 		if (isFlipping) {
-			flipAdapter = new FlipAdapter(this, flipView, feedOffline);
+			flipAdapter = new FlipAdapter(this, flipView, feedOffline, refreshAndLoadMore, feedMessage);
 			flipAdapter.setCallback(this);
 			flipView.setAdapter(flipAdapter);
 			flipView.setOnFlipListener(this);
@@ -120,7 +122,7 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		});
 		
 		// Action: Reload when offline
-		feedOfflineReload.setOnClickListener(new View.OnClickListener() {
+		feedOffline.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	feedOffline.setVisibility(View.INVISIBLE);
 		    	//feedLoading.setVisibility(View.VISIBLE);
@@ -169,8 +171,6 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 			float flipDistancePerPage) {
 		if (overFlippingPrevious && overFlipDistance > 100) {
 			Log.i("overflip", "Triggered a Pull to Refresh...");
-			// TODO Pull to refresh
-			// TODO Display message if offline
 			if (isFlipping && flipAdapter != null) {
 	    		flipAdapter.updateFeed();
 	    	} else if (pagerAdapter != null) {
@@ -178,8 +178,7 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 	    	}
 		} else if (!overFlippingPrevious && overFlipDistance > 100) {
 			Log.i("overflip", "Triggered a Pull to Add more moments...");
-			// TODO Pull to add more moments
-			// TODO Display message if offline
+			flipAdapter.addMoreMoments(20);
 		}
 	}
 }

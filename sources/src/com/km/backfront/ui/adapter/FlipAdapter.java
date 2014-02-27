@@ -55,14 +55,18 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	private FlipCallback callback;
 	private FlipView flipview;
 	private View offlineView;
+	private View refreshAndLoadMore;
+	private View feedMessage;
 	private int skip = 0;
 	private boolean isUpdating = false;
 	
-	public FlipAdapter(Activity activity, FlipView flipview, View offlineView) {
+	public FlipAdapter(Activity activity, FlipView flipview, View offlineView, View refreshAndLoadMore, View feedMessage) {
 		inflater = LayoutInflater.from(activity);
 		this.activity = activity;
 		this.flipview = flipview;
 		this.offlineView = offlineView;
+		this.refreshAndLoadMore = refreshAndLoadMore;
+		this.feedMessage = feedMessage;
 		updateFeed();
 	}
 	
@@ -306,9 +310,12 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	}
 	
 	public void updateFeed() {
+		feedMessage.setVisibility(View.VISIBLE);
 		if (!Utils.hasConnection(activity)) {
 			Log.d(TAG, "No internet connection...");
             offlineView.setVisibility(View.VISIBLE);
+            // Notify user
+        	Utils.showToast(activity, "No internet connection...");
 		} else {
 			if (!isUpdating) {
 				isUpdating = true;
@@ -317,16 +324,21 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 		            public void done(List<Moment> momentList, ParseException e) {
 		                if (e == null) {
 		                	Log.d(TAG, "Retrieved " + momentList.size() + " moments");
+		                	flipview.setVisibility(View.VISIBLE);
 		                	moments = momentList;
 		                    notifyDataSetChanged();
 		                    flipview.flipTo(0);
 		                    flipview.peakNext(true);
 		                    skip = momentList.size();
+		                    offlineView.setVisibility(View.GONE);
+		                    refreshAndLoadMore.setVisibility(View.VISIBLE);
 		                } else {
 		                    Log.e(TAG, "Error: " + e.getMessage());
 		                    offlineView.setVisibility(View.VISIBLE);
+		                    refreshAndLoadMore.setVisibility(View.GONE);
 		                }
 		                isUpdating = false;
+		                feedMessage.setVisibility(View.GONE);
 		            }
 		        });
 			}
