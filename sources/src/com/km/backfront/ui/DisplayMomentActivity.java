@@ -11,7 +11,6 @@ import com.km.backfront.model.Report;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.Utils;
 import com.parse.CountCallback;
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -19,8 +18,6 @@ import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -112,12 +109,10 @@ public class DisplayMomentActivity extends Activity {
         momentLikeView.setOnClickListener(new View.OnClickListener() {
 		    public void onClick(View v) {
 		    	// Unlike
-		    	if (moment.isLiked()) {
-		    		momentLikeView.setImageResource(R.drawable.icon_love);
+		    	if (moment.isLiked() == Moment.LIKED) {
 		    		unlikeMoment();
 		    	// Like
 		    	} else {
-    		    	momentLikeView.setImageResource(R.drawable.icon_love_red);
     		    	likeMoment();
 		    	}
 		    }
@@ -212,56 +207,86 @@ public class DisplayMomentActivity extends Activity {
 	}
 	
 	public void updateLikeCount() {
-		// Check if current user likes this moment
-    	if (ParseUser.getCurrentUser() != null) {
-        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
-        	query1.whereEqualTo("moment", moment);
-        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-        	query1.countInBackground(new CountCallback() {
+		if (moment.isLiked() != Moment.LIKE_UNDEFINED) {
+			if (moment.isLiked() == Moment.LIKED) {
+				momentLikeView.setImageResource(R.drawable.icon_like_red);
+			} else if (moment.isLiked() == Moment.NOT_LIKED) {
+				momentLikeView.setImageResource(R.drawable.icon_like);
+			}
+			if (moment.getLikeCount() > 0) {
+				momentLikeCount.setText(moment.getLikeCount()+"");
+        		momentLikeBoxTop.setVisibility(View.VISIBLE);
+        		momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+        		momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
+			} else {
+				momentLikeCount.setText("");
+        		momentLikeBoxTop.setVisibility(View.INVISIBLE);
+        		momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+        		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
+			}
+		} else {
+		
+			// Check if current user likes this moment
+	    	if (ParseUser.getCurrentUser() != null) {
+	        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
+	        	query1.whereEqualTo("moment", moment);
+	        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+	        	query1.countInBackground(new CountCallback() {
+		            public void done(int count, ParseException e) {
+		                if (e == null) {
+		                	if (count > 0) {
+		                		momentLikeView.setImageResource(R.drawable.icon_like_red);
+		                		moment.isLiked(Moment.LIKED);
+		                	} else {
+		                		momentLikeView.setImageResource(R.drawable.icon_like);
+		                		moment.isLiked(Moment.NOT_LIKED);
+		                	}
+		                } else {
+		                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
+		                }
+		            }
+		        });
+	    	}
+	    	
+	    	// Retrieve the number of likes for this moment
+	    	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+	    	query.whereEqualTo("moment", moment);
+	    	query.countInBackground(new CountCallback() {
 	            public void done(int count, ParseException e) {
 	                if (e == null) {
+	                	moment.setLikeCount(count);
 	                	if (count > 0) {
-	                		momentLikeView.setImageResource(R.drawable.icon_like_red);
-	                		moment.isLiked(true);
+	                		momentLikeCount.setText(count+"");
+	                		momentLikeBoxTop.setVisibility(View.VISIBLE);
+	                		momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+	                		momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
 	                	} else {
-	                		momentLikeView.setImageResource(R.drawable.icon_like);
-	                		moment.isLiked(false);
+	                		momentLikeCount.setText("");
+	                		momentLikeBoxTop.setVisibility(View.INVISIBLE);
+	                		momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+	                		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
 	                	}
 	                } else {
-	                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
+	                    Log.d(TAG, "Error when counting likes: " + e.getMessage());
 	                }
 	            }
 	        });
-    	}
-    	
-    	// Retrieve the number of likes for this moment
-    	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
-    	query.whereEqualTo("moment", moment);
-    	query.countInBackground(new CountCallback() {
-            public void done(int count, ParseException e) {
-                if (e == null) {
-                	if (count > 0) {
-                		momentLikeCount.setText(count+"");
-                		momentLikeBoxTop.setVisibility(View.VISIBLE);
-                		momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
-                		momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
-                	} else {
-                		momentLikeCount.setText("");
-                		momentLikeBoxTop.setVisibility(View.INVISIBLE);
-                		momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
-                		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
-                	}
-                } else {
-                    Log.d(TAG, "Error when counting likes: " + e.getMessage());
-                }
-            }
-        });
+		}
     }
 	
 	public void likeMoment() {
 		if (Utils.userLoggedIn(this)) {
     		// Change view to be activated
     		momentLikeView.setImageResource(R.drawable.icon_like_red);
+    		
+    		// Like moment and increment like count
+    		moment.isLiked(Moment.LIKED);
+    		int likeCount = moment.getLikeCount() + 1;
+    		moment.setLikeCount(likeCount);
+    		momentLikeCount.setText(likeCount+"");
+    		momentLikeBoxTop.setVisibility(View.VISIBLE);
+    		momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+    		momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
 	    	
     		// Create like
         	Like like = new Like();
@@ -269,7 +294,8 @@ public class DisplayMomentActivity extends Activity {
 	    	like.setMoment(moment);
 	    	
 	    	// Save the like to Parse
-	    	like.saveInBackground(new SaveCallback() {
+	    	like.saveInBackground();
+	    	/*like.saveInBackground(new SaveCallback() {
 	
 				@Override
 				public void done(ParseException e) {
@@ -280,7 +306,7 @@ public class DisplayMomentActivity extends Activity {
 						Log.e(TAG, "Error saving: " + e.getMessage());
 					}
 				}
-			});
+			});*/
 		}
     }
 	
@@ -289,15 +315,33 @@ public class DisplayMomentActivity extends Activity {
     		// Change view to be deactivated
     		momentLikeView.setImageResource(R.drawable.icon_like);
     		
+    		// Unlike moment and increment like count
+    		moment.isLiked(Moment.NOT_LIKED);
+    		int likeCount = moment.getLikeCount() - 1;
+    		if (likeCount < 1) {
+    			likeCount = 0;
+    			momentLikeCount.setText("");
+        		momentLikeBoxTop.setVisibility(View.INVISIBLE);
+        		momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+        		momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
+    		} else {
+    			momentLikeCount.setText(likeCount+"");
+    		}
+    		moment.setLikeCount(likeCount);
+    		
     		// Search like and delete it
 	    	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
 	    	query1.whereEqualTo("moment", moment);
 	    	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+	    	Log.d(TAG, "Fetching like in DB...");
 	    	query1.findInBackground(new FindCallback<Like>() {
 	            public void done(List<Like> likes, ParseException e) {
 	                if (e == null) {
+	                	Log.d(TAG, "Found " + likes.size() + " matching likes.");
 	                	if (likes.size() > 0) {
-	                		likes.get(0).deleteInBackground(new DeleteCallback() {
+	                		Log.d(TAG, "Deleting...");
+	                		likes.get(0).deleteInBackground();
+	                		/*likes.get(0).deleteInBackground(new DeleteCallback() {
 	                			public void done(ParseException e) {
 	                				if (e == null) {
 	                					updateLikeCount();
@@ -306,7 +350,7 @@ public class DisplayMomentActivity extends Activity {
 	                					Log.e(TAG, "Error saving: " + e.getMessage());
 	        				     	}
 	                			}
-	                		});
+	                		});*/
 	                	}
 	                } else {
 	                    Log.e(TAG, "Error: " + e.getMessage());

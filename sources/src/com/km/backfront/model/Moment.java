@@ -14,7 +14,12 @@ import com.parse.ParseUser;
 @ParseClassName("Moment")
 public class Moment extends ParseObject {
 	
-	private boolean isLiked = false;
+	public static final int LIKE_UNDEFINED = 0;
+	public static final int LIKED = 1;
+	public static final int NOT_LIKED = -1;
+	
+	private int isLiked = LIKE_UNDEFINED;
+	private int likeCount = 0;
 
 	public Moment() {
 		// A default constructor is required.
@@ -76,11 +81,19 @@ public class Moment extends ParseObject {
 		put("locationDescription", locationDescription);
 	}
 	
-	public boolean isLiked() {
+	public int isLiked() {
 		return this.isLiked;
 	}
 	
-	public void isLiked(boolean bool) {
-		this.isLiked = bool;
+	public void isLiked(int value) {
+		this.isLiked = value;
+	}
+	
+	public int getLikeCount() {
+		return this.likeCount;
+	}
+	
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 }

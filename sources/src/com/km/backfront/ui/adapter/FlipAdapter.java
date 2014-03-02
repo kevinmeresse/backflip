@@ -12,15 +12,12 @@ import com.km.backfront.ui.ProfileActivity;
 import com.km.backfront.util.BitmapHelper;
 import com.km.backfront.util.Utils;
 import com.parse.CountCallback;
-import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -124,98 +121,97 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 			/*holder.firstPage.setOnClickListener(this);
 			holder.lastPage.setOnClickListener(this);*/
 			
-			
-			// Create popup menu
-			holder.popup = new PopupMenu(activity, holder.momentMoreButton);
-	        MenuInflater menuInflater = holder.popup.getMenuInflater();
-	        menuInflater.inflate(R.menu.moment_menu, holder.popup.getMenu());
-	        
-	        // Handle menu item clicks
-	        holder.popup.setOnMenuItemClickListener(
-                new PopupMenu.OnMenuItemClickListener() {
-		            @Override
-		            public boolean onMenuItemClick(MenuItem item) {
-		                switch (item.getItemId()) {
-			                case R.id.report:
-				            	Log.i(TAG, "Clicked on 'Report'");
-				            	reportProblem(moment);
-				                return true;
-				            case R.id.save:
-				            	try {
-					            	byte[] data = moment.getPhotoFile().getData();
-					            	Bitmap momentImage = BitmapFactory.decodeByteArray(data, 0, data.length);
-					            	BitmapHelper.saveImageInGallery(activity, momentImage);
-					            	Utils.showToast(activity, "Picture successfully saved");
-				            	} catch (Exception e) {
-									Utils.showToast(activity, "Sorry, picture could not be saved...");
-									e.printStackTrace();
-				            	}
-				                return true;
-				            default:
-				                return false;
-		                }
-		            }
-                }
-            );
-			
-			// Action: Click on MORE
-			holder.momentMoreButton.setOnClickListener(new View.OnClickListener() {
-    		    public void onClick(View v) {
-    		    	holder.popup.show();
-    		    }
-    		});
-			
-			// Action: Click on author
-			holder.momentAuthorView.setOnClickListener(new View.OnClickListener() {
-    		    public void onClick(View v) {
-    		    	Intent intent = new Intent(v.getContext(), ProfileActivity.class);
-    		    	intent.putExtra("USER_ID", moment.getAuthor().getObjectId());
-    		    	intent.putExtra("USERNAME", moment.getAuthor().getUsername());
-    		    	activity.startActivity(intent);
-    		    }
-    		});
-			
-			// Action: Click on LIKE
-			holder.momentLikeView.setOnClickListener(new View.OnClickListener() {
-    		    public void onClick(View v) {
-    		    	// Unlike
-    		    	if (moment.isLiked()) {
-    		    		unlikeMoment(moment, holder);
-    		    	// Like
-    		    	} else {
-	    		    	likeMoment(moment, holder);
-    		    	}
-    		    }
-    		});
-			
-			// Action: Reload picture
-			holder.pictureNotFoundView.setOnClickListener(new View.OnClickListener() {
-    		    public void onClick(View v) {
-    		    	holder.momentLoading.setVisibility(View.VISIBLE);
-    		    	holder.imageBadPreview.setVisibility(View.VISIBLE);
-    		    	holder.pictureNotFoundView.setVisibility(View.GONE);
-    		    	holder.imageBadPreview.loadInBackground();
-    		    	holder.imageView.loadInBackground(new GetDataCallback() {
-    	            	@Override
-    	            	public void done(byte[] data, ParseException e) {
-    	            		if (e == null) {
-    	            			holder.momentLikeView.setVisibility(View.VISIBLE);
-    	            			holder.momentMoreButton.setVisibility(View.VISIBLE);
-    		            		updateLikeCount(moment, holder);
-    	            		} else {
-    	            			holder.momentLoading.setVisibility(View.GONE);
-    	            			holder.imageBadPreview.setVisibility(View.GONE);
-    	            			holder.pictureNotFoundView.setVisibility(View.VISIBLE);
-    	            		}
-    	            	}
-    	            });
-    		    }
-            });
-			
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		
+		// Create popup menu
+		holder.popup = new PopupMenu(activity, holder.momentMoreButton);
+        MenuInflater menuInflater = holder.popup.getMenuInflater();
+        menuInflater.inflate(R.menu.moment_menu, holder.popup.getMenu());
+        
+        // Handle menu item clicks
+        holder.popup.setOnMenuItemClickListener(
+            new PopupMenu.OnMenuItemClickListener() {
+	            @Override
+	            public boolean onMenuItemClick(MenuItem item) {
+	                switch (item.getItemId()) {
+		                case R.id.report:
+			            	Log.i(TAG, "Clicked on 'Report'");
+			            	reportProblem(moment);
+			                return true;
+			            case R.id.save:
+			            	try {
+				            	byte[] data = moment.getPhotoFile().getData();
+				            	Bitmap momentImage = BitmapFactory.decodeByteArray(data, 0, data.length);
+				            	BitmapHelper.saveImageInGallery(activity, momentImage);
+				            	Utils.showToast(activity, "Picture successfully saved");
+			            	} catch (Exception e) {
+								Utils.showToast(activity, "Sorry, picture could not be saved...");
+								e.printStackTrace();
+			            	}
+			                return true;
+			            default:
+			                return false;
+	                }
+	            }
+            }
+        );
+		
+		// Action: Click on MORE
+		holder.momentMoreButton.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	holder.popup.show();
+		    }
+		});
+		
+		// Action: Click on author
+		holder.momentAuthorView.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	Intent intent = new Intent(v.getContext(), ProfileActivity.class);
+		    	intent.putExtra("USER_ID", moment.getAuthor().getObjectId());
+		    	intent.putExtra("USERNAME", moment.getAuthor().getUsername());
+		    	activity.startActivity(intent);
+		    }
+		});
+		
+		// Action: Click on LIKE
+		holder.momentLikeView.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	// Unlike
+		    	if (moment.isLiked() == Moment.LIKED) {
+		    		unlikeMoment(moment, holder);
+		    	// Like
+		    	} else {
+    		    	likeMoment(moment, holder);
+		    	}
+		    }
+		});
+		
+		// Action: Reload picture
+		holder.pictureNotFoundView.setOnClickListener(new View.OnClickListener() {
+		    public void onClick(View v) {
+		    	holder.momentLoading.setVisibility(View.VISIBLE);
+		    	holder.imageBadPreview.setVisibility(View.VISIBLE);
+		    	holder.pictureNotFoundView.setVisibility(View.GONE);
+		    	holder.imageBadPreview.loadInBackground();
+		    	holder.imageView.loadInBackground(new GetDataCallback() {
+	            	@Override
+	            	public void done(byte[] data, ParseException e) {
+	            		if (e == null) {
+	            			holder.momentLikeView.setVisibility(View.VISIBLE);
+	            			holder.momentMoreButton.setVisibility(View.VISIBLE);
+		            		displayLikeCount(moment, holder);
+	            		} else {
+	            			holder.momentLoading.setVisibility(View.GONE);
+	            			holder.imageBadPreview.setVisibility(View.GONE);
+	            			holder.pictureNotFoundView.setVisibility(View.VISIBLE);
+	            		}
+	            	}
+	            });
+		    }
+        });
 		
 		setViewContent(moment, holder);
 		
@@ -251,9 +247,9 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 			holder.momentMoreButton.setVisibility(View.GONE);
 			holder.momentPicked.setVisibility(View.INVISIBLE);
 			holder.momentLikeCount.setText("");
-    		holder.momentLikeBoxTop.setVisibility(View.INVISIBLE);
-    		holder.momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
-    		holder.momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
+    		holder.momentLikeBoxTop.setVisibility(View.GONE);
+    		holder.momentLikeBoxBottomOutside.setVisibility(View.GONE);
+    		holder.momentLikeBoxBottomInside.setVisibility(View.GONE);
     		holder.momentLikeView.setImageResource(R.drawable.icon_like);
 			
 			// Load the bad preview first
@@ -268,7 +264,7 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
             		if (e == null) {
             			holder.momentLikeView.setVisibility(View.VISIBLE);
             			holder.momentMoreButton.setVisibility(View.VISIBLE);
-            			updateLikeCount(moment, holder);
+            			displayLikeCount(moment, holder);
             		} else {
             			holder.momentLoading.setVisibility(View.GONE);
             			holder.imageBadPreview.setVisibility(View.GONE);
@@ -316,6 +312,7 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
             offlineView.setVisibility(View.VISIBLE);
             // Notify user
         	Utils.showToast(activity, "No internet connection...");
+        	feedMessage.setVisibility(View.GONE);
 		} else {
 			if (!isUpdating) {
 				isUpdating = true;
@@ -386,57 +383,89 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
     	Utils.showToast(activity, "Your report has been sent. Thank you for your help!", Toast.LENGTH_LONG);
     }
 	
-	public void updateLikeCount(final Moment moment, final ViewHolder holder) {
-    	// Check if current user likes this moment
-    	if (ParseUser.getCurrentUser() != null) {
-        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
-        	query1.whereEqualTo("moment", moment);
-        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-        	query1.countInBackground(new CountCallback() {
+	public void displayLikeCount(final Moment moment, final ViewHolder holder) {
+		if (moment.isLiked() != Moment.LIKE_UNDEFINED) {
+			if (moment.isLiked() == Moment.LIKED) {
+				holder.momentLikeView.setImageResource(R.drawable.icon_like_red);
+			} else if (moment.isLiked() == Moment.NOT_LIKED) {
+				holder.momentLikeView.setImageResource(R.drawable.icon_like);
+			}
+			if (moment.getLikeCount() > 0) {
+				holder.momentLikeCount.setText(moment.getLikeCount()+"");
+        		holder.momentLikeBoxTop.setVisibility(View.VISIBLE);
+        		holder.momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+        		holder.momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
+			} else {
+				holder.momentLikeCount.setText("");
+        		holder.momentLikeBoxTop.setVisibility(View.INVISIBLE);
+        		holder.momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+        		holder.momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
+			}
+		} else {
+			// Check if current user likes this moment
+	    	if (ParseUser.getCurrentUser() != null) {
+	        	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
+	        	query1.whereEqualTo("moment", moment);
+	        	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
+	        	query1.countInBackground(new CountCallback() {
+		            public void done(int count, ParseException e) {
+		            	
+		                if (e == null) {
+		                	if (count > 0) {
+		                		holder.momentLikeView.setImageResource(R.drawable.icon_like_red);
+		                		moment.isLiked(Moment.LIKED);
+		                	} else {
+		                		holder.momentLikeView.setImageResource(R.drawable.icon_like);
+		                		moment.isLiked(Moment.NOT_LIKED);
+		                	}
+		                } else {
+		                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
+		                    e.printStackTrace();
+		                }
+		            }
+		        });
+	    	}
+	    	
+	    	// Retrieve the number of likes for this moment
+	    	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+	    	query.whereEqualTo("moment", moment);
+	    	query.countInBackground(new CountCallback() {
 	            public void done(int count, ParseException e) {
 	                if (e == null) {
+	                	moment.setLikeCount(count);
 	                	if (count > 0) {
-	                		holder.momentLikeView.setImageResource(R.drawable.icon_like_red);
-	                		moment.isLiked(true);
+	                		holder.momentLikeCount.setText(count+"");
+	                		holder.momentLikeBoxTop.setVisibility(View.VISIBLE);
+	                		holder.momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+	                		holder.momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
 	                	} else {
-	                		holder.momentLikeView.setImageResource(R.drawable.icon_like);
-	                		moment.isLiked(false);
+	                		holder.momentLikeCount.setText("");
+	                		holder.momentLikeBoxTop.setVisibility(View.INVISIBLE);
+	                		holder.momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+	                		holder.momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
 	                	}
 	                } else {
 	                    Log.e(TAG, "Error when counting likes: " + e.getMessage());
+	                    e.printStackTrace();
 	                }
 	            }
 	        });
-    	}
-    	
-    	// Retrieve the number of likes for this moment
-    	ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
-    	query.whereEqualTo("moment", moment);
-    	query.countInBackground(new CountCallback() {
-            public void done(int count, ParseException e) {
-                if (e == null) {
-                	if (count > 0) {
-                		holder.momentLikeCount.setText(count+"");
-                		holder.momentLikeBoxTop.setVisibility(View.VISIBLE);
-                		holder.momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
-                		holder.momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
-                	} else {
-                		holder.momentLikeCount.setText("");
-                		holder.momentLikeBoxTop.setVisibility(View.INVISIBLE);
-                		holder.momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
-                		holder.momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
-                	}
-                } else {
-                    Log.d(TAG, "Error when counting likes: " + e.getMessage());
-                }
-            }
-        });
+		}
     }
 	
 	public void likeMoment(final Moment moment, final ViewHolder holder) {
-    	if (Utils.userLoggedIn(activity)) {
+		if (Utils.userLoggedIn(activity)) {
     		// Change view to be activated
     		holder.momentLikeView.setImageResource(R.drawable.icon_like_red);
+    		
+    		// Like moment and increment like count
+    		moment.isLiked(Moment.LIKED);
+    		int likeCount = moment.getLikeCount() + 1;
+    		moment.setLikeCount(likeCount);
+    		holder.momentLikeCount.setText(likeCount+"");
+    		holder.momentLikeBoxTop.setVisibility(View.VISIBLE);
+    		holder.momentLikeBoxBottomOutside.setVisibility(View.VISIBLE);
+    		holder.momentLikeBoxBottomInside.setVisibility(View.VISIBLE);
     		
     		// Create like
         	Like like = new Like();
@@ -444,7 +473,8 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	    	like.setMoment(moment);
 	    	
 	    	// Save the like to Parse
-	    	like.saveInBackground(new SaveCallback() {
+	    	like.saveInBackground();
+	    	/*like.saveInBackground(new SaveCallback() {
 
 				@Override
 				public void done(ParseException e) {
@@ -456,24 +486,40 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 					}
 				}
 
-			});
+			});*/
     	}
     }
 	
 	public void unlikeMoment(final Moment moment, final ViewHolder holder) {
-    	if (Utils.userLoggedIn(activity)) {
+		if (Utils.userLoggedIn(activity)) {
     		// Change view to be deactivated
     		holder.momentLikeView.setImageResource(R.drawable.icon_like);
+    		
+    		// Unlike moment and increment like count
+    		moment.isLiked(Moment.NOT_LIKED);
+    		int likeCount = moment.getLikeCount() - 1;
+    		if (likeCount < 1) {
+    			likeCount = 0;
+    			holder.momentLikeCount.setText("");
+        		holder.momentLikeBoxTop.setVisibility(View.INVISIBLE);
+        		holder.momentLikeBoxBottomOutside.setVisibility(View.INVISIBLE);
+        		holder.momentLikeBoxBottomInside.setVisibility(View.INVISIBLE);
+    		} else {
+    			holder.momentLikeCount.setText(likeCount+"");
+    		}
+    		moment.setLikeCount(likeCount);
+    		
     		
     		// Search like and delete it
         	ParseQuery<Like> query1 = ParseQuery.getQuery(Like.class);
         	query1.whereEqualTo("moment", moment);
         	query1.whereEqualTo("fromUser", ParseUser.getCurrentUser());
-	    	query1.findInBackground(new FindCallback<Like>() {
+        	query1.findInBackground(new FindCallback<Like>() {
 	            public void done(List<Like> likes, ParseException e) {
 	                if (e == null) {
 	                	if (likes.size() > 0) {
-	                		likes.get(0).deleteInBackground(new DeleteCallback() {
+	                		likes.get(0).deleteInBackground();
+	                		/*likes.get(0).deleteInBackground(new DeleteCallback() {
 	                			public void done(ParseException e) {
 	                				if (e == null) {
 	                					updateLikeCount(moment, holder);
@@ -482,10 +528,11 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	                					Log.e(TAG, "Error saving: " + e.getMessage());
             				     	}
 	                			}
-	                		});
+	                		});*/
 	                	}
 	                } else {
-	                	Log.d(TAG, "Error: " + e.getMessage());
+	                	Log.e(TAG, "Error: " + e.getMessage());
+	                	e.printStackTrace();
 	                }
 	            }
 	        });
