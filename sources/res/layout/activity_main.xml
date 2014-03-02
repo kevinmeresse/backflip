@@ -95,13 +95,13 @@
     </RelativeLayout>
     
     
-    <com.km.backfront.ui.vertical.VerticalViewPager
+    <com.km.backflip.ui.vertical.VerticalViewPager
 		android:id="@+id/pager"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_alignParentTop="true"
 		android:layout_above="@id/menu" >
-	</com.km.backfront.ui.vertical.VerticalViewPager>
+	</com.km.backflip.ui.vertical.VerticalViewPager>
 	
     <se.emilsjolander.flipview.FlipView
         android:id="@+id/flipview"

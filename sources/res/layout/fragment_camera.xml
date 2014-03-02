@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <com.km.backfront.ui.PreviewFrameLayout
+    <com.km.backflip.ui.PreviewFrameLayout
 	    android:id="@+id/frame_layout"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent" >
@@ -15,7 +15,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent" />
 		</FrameLayout>
-	</com.km.backfront.ui.PreviewFrameLayout>
+	</com.km.backflip.ui.PreviewFrameLayout>
 	
     
     
@@ -55,7 +55,6 @@
         android:layout_gravity="center"
         android:src="@drawable/icon_camera_arrow_up"
         android:contentDescription="@string/camera_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null" />
     
     <ImageButton
@@ -65,7 +64,6 @@
         android:layout_gravity="center"
         android:src="@drawable/icon_camera_arrow_down"
         android:contentDescription="@string/camera_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:visibility="invisible" />
     
@@ -76,7 +74,6 @@
         android:layout_gravity="center"
         android:src="@drawable/icon_check"
         android:contentDescription="@string/accept_photo_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:visibility="invisible" />
     
@@ -87,7 +84,6 @@
         android:layout_gravity="top|left"
         android:src="@drawable/icon_close"
         android:contentDescription="@string/cancel_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:paddingLeft="7dp"
         android:paddingTop="7dp" />
@@ -99,7 +95,6 @@
         android:layout_gravity="top|right"
         android:src="@drawable/icon_flash_disable"
         android:contentDescription="@string/flash_button_description"
-        style="?android:attr/borderlessButtonStyle"
         android:background="@null"
         android:paddingRight="7dp"
         android:paddingTop="7dp" />
