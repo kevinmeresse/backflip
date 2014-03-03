@@ -13,6 +13,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+import com.crittercism.app.Crittercism;
 import com.km.backflip.util.Utils;
 import com.km.backflip.R;
 
@@ -146,6 +147,12 @@ public class SignUpActivity extends Activity {
 								ParseInstallation installation = ParseInstallation.getCurrentInstallation();
 								installation.put("user", ParseUser.getCurrentUser());
 								installation.saveInBackground();
+								
+								// Set the username for Crittercism
+								if (ParseUser.getCurrentUser() != null) {
+									Crittercism.setUsername(ParseUser.getCurrentUser().getUsername());
+								}
+								
 								// Return
 								setResult(Activity.RESULT_OK);
 								finish();

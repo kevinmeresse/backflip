@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.crittercism.app.Crittercism;
 import com.km.backflip.model.Moment;
 import com.km.backflip.ui.adapter.FlipAdapter;
 import com.km.backflip.ui.adapter.VerticalPagerAdapter;
@@ -25,6 +26,7 @@ import com.km.backflip.ui.adapter.FlipAdapter.FlipCallback;
 import com.km.backflip.ui.vertical.VerticalViewPager;
 import com.km.backflip.R;
 import com.parse.ParseAnalytics;
+import com.parse.ParseUser;
 
 public class MainActivity extends FragmentActivity implements FlipCallback, OnFlipListener, OnOverFlipListener {
 	
@@ -59,6 +61,11 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		// Track statistics with Parse
 		ParseAnalytics.trackAppOpened(getIntent());
 		
+		// Set the username for Crittercism
+		if (ParseUser.getCurrentUser() != null) {
+			Crittercism.setUsername(ParseUser.getCurrentUser().getUsername());
+		}
+		
 		// Set the layout
 		setContentView(R.layout.activity_main);
 		
@@ -92,7 +99,7 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 			verticalPager.setAdapter(pagerAdapter);
 		}
 		
-        // Action: Go to feed page
+		// Action: Go to feed page
 		if (!isFlipping) {
 			feedButton.setOnClickListener(new View.OnClickListener() {
 			    public void onClick(View v) {

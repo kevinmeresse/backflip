@@ -14,12 +14,18 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
 import com.parse.PushService;
+import com.crittercism.app.Crittercism;
 
 public class BackflipApplication extends Application {
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		/*
+		 * Crittercism intialization
+		 */
+		Crittercism.initialize(getApplicationContext(), "5313c676a6d3d7375c000003");
 
 		/*
 		 * Register all ParseObject subclasses
