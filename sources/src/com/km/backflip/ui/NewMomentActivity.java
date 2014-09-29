@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+
+import com.crittercism.app.Crittercism;
 import com.km.backflip.R;
 import com.parse.ParseFacebookUtils;
 
@@ -51,6 +53,7 @@ public class NewMomentActivity extends FragmentActivity {
 	    	Log.d(TAG, "Finishing Facebook authentication....");
 			ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 		} catch (Exception e) {
+			Crittercism.logHandledException(e);
 			Log.e(TAG, "Error: Couldn't finish Facebook authentication.");
 		}
 	}

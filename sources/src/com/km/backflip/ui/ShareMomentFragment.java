@@ -22,6 +22,7 @@ import com.parse.ParseTwitterUtils;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import com.crittercism.app.Crittercism;
 import com.facebook.Session.NewPermissionsRequest;
 import android.app.Activity;
 import android.content.Intent;
@@ -158,6 +159,7 @@ public class ShareMomentFragment extends Fragment {
 		    		BitmapHelper.saveImageInGallery(getActivity(), momentImage);
 					Utils.showToast(getActivity(), "Picture successfully saved");
 				} catch (Exception e) {
+					Crittercism.logHandledException(e);
 					Utils.showToast(getActivity(), "Sorry, picture could not be saved...");
 					shareSaveImageButton.setVisibility(View.VISIBLE);
 			    	shareSaveImageDisabled.setVisibility(View.INVISIBLE);
@@ -393,6 +395,7 @@ public class ShareMomentFragment extends Fragment {
 				@Override
 				public void done(BackflipException e) {
 					if (e != null) {
+						Crittercism.logHandledException(e);
 						Log.e(TAG, "An error occured when sharing on Facebook: " + e.getMessage());
 						Utils.showToast(getActivity(), "An error occured when sharing on Facebook");
 					}
@@ -408,6 +411,7 @@ public class ShareMomentFragment extends Fragment {
 				@Override
 				public void done(BackflipException e) {
 					if (e != null) {
+						Crittercism.logHandledException(e);
 						Log.e(TAG, "An error occured when sharing on Twitter: " + e.getMessage());
 						Utils.showToast(getActivity(), "An error occured when sharing on Twitter");
 					}
@@ -423,6 +427,7 @@ public class ShareMomentFragment extends Fragment {
 				@Override
 				public void done(BackflipException e) {
 					if (e != null) {
+						Crittercism.logHandledException(e);
 						Log.e(TAG, "An error occured when sharing on Path" + e.getMessage());
 						Utils.showToast(getActivity(), "An error occured when sharing on Path");
 					}
@@ -455,6 +460,7 @@ public class ShareMomentFragment extends Fragment {
 		try {
 			moment.save();
 		} catch (ParseException e) {
+			Crittercism.logHandledException(e);
 			Log.e(TAG, "Error when saving moment to Parse: " + e.getMessage());
 			e.printStackTrace();
 			Utils.showToast(getActivity(), "Error when saving moment on the server... Please try again shortly!");
@@ -465,6 +471,7 @@ public class ShareMomentFragment extends Fragment {
 		try {
 			moment.fetch();
 		} catch (ParseException e) {
+			Crittercism.logHandledException(e);
 			Log.e(TAG, "Couldn't fetch moment from Parse: " + e.getMessage());
 			e.printStackTrace();
 		}

@@ -27,6 +27,7 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.crittercism.app.Crittercism;
 import com.km.backflip.model.Follow;
 import com.km.backflip.model.Moment;
 import com.km.backflip.util.ActivityUtils;
@@ -126,6 +127,7 @@ public class ProfileActivity extends Activity {
 			avatar.setParseFile((ParseFile) displayedUser.fetchIfNeeded().get("avatar"));
 			avatar.loadInBackground();
 		} catch (ParseException e1) {
+			Crittercism.logHandledException(e1);
 			e1.printStackTrace();
 		}
 	    
@@ -206,6 +208,7 @@ public class ProfileActivity extends Activity {
 			Log.d(TAG, "New count: " + count);
 			numberFollowers.setText("" + count);
 		} catch (NumberFormatException e) {
+			Crittercism.logHandledException(e);
 			Log.e(TAG, "Couldn't parse number: " + e.getMessage());
 			// Do nothing
 		}
@@ -219,6 +222,7 @@ public class ProfileActivity extends Activity {
 			Log.d(TAG, "New count: " + count);
 			numberFollowers.setText("" + count);
 		} catch (NumberFormatException e) {
+			Crittercism.logHandledException(e);
 			Log.e(TAG, "Couldn't parse number: " + e.getMessage());
 			// Do nothing
 		}

@@ -89,10 +89,10 @@ public class LoginActivity extends Activity {
 
 					@Override
 					public void done(ParseUser user, ParseException e) {
-
 						dlg.dismiss();
 						if (e != null) {
 							// Show the error message
+							Crittercism.logHandledException(e);
 							Log.e(TAG, "Couldn't log you in: " + e.getMessage());
 							Utils.showToast(LoginActivity.this, "We couldn't log you in. Please try again...", Toast.LENGTH_LONG);
 						} else {

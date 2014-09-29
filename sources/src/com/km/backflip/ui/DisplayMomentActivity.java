@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import com.crittercism.app.Crittercism;
 import com.km.backflip.model.Like;
 import com.km.backflip.model.Moment;
 import com.km.backflip.model.Report;
@@ -156,11 +157,8 @@ public class DisplayMomentActivity extends Activity {
 				            	Bitmap momentImage = BitmapFactory.decodeByteArray(data, 0, data.length);
 				            	BitmapHelper.saveImageInGallery(DisplayMomentActivity.this, momentImage);
 				            	Utils.showToast(DisplayMomentActivity.this, "Picture successfully saved");
-			            	} catch (FileNotFoundException e) {
-			            		Utils.showToast(DisplayMomentActivity.this, "Sorry, picture could not be saved...");
-							} catch (IOException e) {
-			            		Utils.showToast(DisplayMomentActivity.this, "Sorry, picture could not be saved...");
-							} catch (ParseException e) {
+			            	} catch (Exception e) {
+								Crittercism.logHandledException(e);
 			            		Utils.showToast(DisplayMomentActivity.this, "Sorry, picture could not be saved...");
 			            		e.printStackTrace();
 							}

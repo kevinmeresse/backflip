@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import com.crittercism.app.Crittercism;
 import com.km.backflip.util.BitmapHelper;
 import com.km.backflip.util.CacheManager;
 import com.km.backflip.R;
@@ -332,6 +333,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
                     mStartPreviewFail = false;
                     startPreview();
                 } catch (Exception e) {
+                	Crittercism.logHandledException(e);
                     // In eng build, we throw the exception so that test tool
                     // can detect it and report it
                     if ("eng".equals(Build.TYPE)) {
@@ -414,6 +416,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
             try {
                 startPreview();
             } catch (Exception e) {
+            	Crittercism.logHandledException(e);
             	Log.e(TAG, "Exception caused by setPreviewDisplay()", e);
                 return;
             }
@@ -554,6 +557,7 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
         try {
             startPreview();
         } catch (Exception e) {
+        	Crittercism.logHandledException(e);
         	Log.e(TAG, "Exception caused by setPreviewDisplay()", e);
             return;
         }

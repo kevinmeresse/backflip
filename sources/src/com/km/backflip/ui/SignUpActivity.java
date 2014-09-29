@@ -161,6 +161,7 @@ public class SignUpActivity extends Activity {
 					});
 				} catch (Exception e) {
 					dlg.dismiss();
+					Crittercism.logHandledException(e);
 					Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
 					Utils.showToast(SignUpActivity.this, "We couldn't sign you up. Please try again...", Toast.LENGTH_LONG);
 					e.printStackTrace();

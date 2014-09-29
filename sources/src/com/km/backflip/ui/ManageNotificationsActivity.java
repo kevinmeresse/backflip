@@ -1,5 +1,6 @@
 package com.km.backflip.ui;
 
+import com.crittercism.app.Crittercism;
 import com.km.backflip.R;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -134,6 +135,7 @@ public class ManageNotificationsActivity extends Activity {
 		    currentUser.put("notifyLike", notifyLike);
 			currentUser.save();
 		} catch (ParseException e) {
+			Crittercism.logHandledException(e);
 			e.printStackTrace();
 		}
 	}

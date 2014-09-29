@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import com.km.backflip.R;
-import com.parse.ParseAnalytics;
 
 public class SplashActivity extends Activity {
 	
@@ -17,9 +16,6 @@ public class SplashActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		this.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
-		
-		// Track statistics with Parse
-		ParseAnalytics.trackAppOpened(getIntent());
 		
 		// Set the layout
 		setContentView(R.layout.activity_splash);
