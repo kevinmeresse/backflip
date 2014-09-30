@@ -41,7 +41,7 @@ import android.widget.Toast;
 
 public class FlipAdapter extends BaseAdapter implements OnClickListener {
 
-	private static final String TAG = "FlipAdapter";
+	public static final String TAG = FlipAdapter.class.getSimpleName();
 
 	public interface FlipCallback{
 		public void onPageRequested(int page);
@@ -50,7 +50,7 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	public List<Moment> moments;
 	private Activity activity;
 	private LayoutInflater inflater;
-	private FlipCallback callback;
+	//private FlipCallback callback;
 	private FlipView flipview;
 	private View offlineView;
 	private View refreshAndLoadMore;
@@ -68,9 +68,9 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 		updateFeed();
 	}
 	
-	public void setCallback(FlipCallback callback) {
+	/*public void setCallback(FlipCallback callback) {
 		this.callback = callback;
-	}
+	}*/
 
 	@Override
 	public int getCount() {
@@ -298,9 +298,9 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-		switch(v.getId()){
+		switch (v.getId()) {
 		/*case R.id.first_page:
-			if(callback != null){
+			if (callback != null) {
 				callback.onPageRequested(0);
 			}
 			break;*/

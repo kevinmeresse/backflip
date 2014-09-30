@@ -19,7 +19,7 @@ import com.parse.SaveCallback;
 
 public class FacebookUtils {
 	
-	protected static final String TAG = "PathUtils";
+	public static final String TAG = FacebookUtils.class.getSimpleName();
 	
 	public static final String PERMISSION_PHOTO_UPLOAD = "photo_upload";
 	public static final String ALBUM_NAME = "Backflip moments";

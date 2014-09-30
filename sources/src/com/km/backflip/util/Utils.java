@@ -27,7 +27,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Utils {
-	protected static final String TAG = "Utils";
+	public static final String TAG = Utils.class.getSimpleName();
 
 	public static String getTimeFromDateToNow(Date date) {
 		Date now = new Date();

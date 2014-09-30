@@ -12,9 +12,9 @@ import android.util.Log;
 
 public class CacheManager {
 
-    private static final long MAX_SIZE = 5242880L; // 5MB
-	private static final String TAG = "CacheManager";
-
+	public static final String TAG = CacheManager.class.getSimpleName();
+	private static final long MAX_SIZE = 5242880L; // 5MB
+	
     private CacheManager() {
 
     }

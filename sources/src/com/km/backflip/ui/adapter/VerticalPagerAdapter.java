@@ -42,7 +42,7 @@ import com.parse.ParseUser;
 
 public class VerticalPagerAdapter extends FragmentStatePagerAdapter {
 
-	private static final String TAG = "VerticalPagerAdapter";
+	public static final String TAG = VerticalPagerAdapter.class.getSimpleName();
 
 	public static List<Moment> moments;
 	private FragmentActivity context;

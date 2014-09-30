@@ -25,7 +25,7 @@ import android.util.Log;
 
 public class LoginPathAsyncTask extends AsyncTask<Void, Void, BackflipException> {
 
-	private static final String TAG = "LoginPathAsyncTask";
+	public static final String TAG = LoginPathAsyncTask.class.getSimpleName();
 	private String code;
 	private LoginCallback callback;
 	

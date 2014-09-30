@@ -97,7 +97,7 @@ import android.widget.Scroller;
  *      complete}
  */
 public class VerticalViewPager extends ViewGroup {
-    private static final String TAG = "VerticalViewPager";
+    public static final String TAG = VerticalViewPager.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private static final boolean USE_CACHE = false;

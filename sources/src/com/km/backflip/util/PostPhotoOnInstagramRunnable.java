@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class PostPhotoOnInstagramRunnable implements Runnable {
 	
-	private static final String TAG = "PostPhotoOnInstagramRunnable";
+	public static final String TAG = PostPhotoOnInstagramRunnable.class.getSimpleName();
 	private Activity activity = null;
 	
 	public PostPhotoOnInstagramRunnable(Activity activity) {

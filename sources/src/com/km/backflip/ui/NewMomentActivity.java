@@ -14,7 +14,7 @@ import com.parse.ParseFacebookUtils;
 
 public class NewMomentActivity extends FragmentActivity {
 	
-	private static final String TAG = "NewMomentActivity";
+	public static final String TAG = NewMomentActivity.class.getSimpleName();
 	private Bitmap currentPhoto = null;
 	
 	@Override

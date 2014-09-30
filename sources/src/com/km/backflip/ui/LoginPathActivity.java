@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 public class LoginPathActivity extends Activity {
 	
-	protected static final String TAG = "LoginPathActivity";
+	public static final String TAG = LoginPathActivity.class.getSimpleName();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

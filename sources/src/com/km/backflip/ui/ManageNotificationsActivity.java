@@ -18,7 +18,7 @@ import android.widget.ToggleButton;
 
 public class ManageNotificationsActivity extends Activity {
 
-	protected static final String TAG = "FollowersActivity";
+	public static final String TAG = ManageNotificationsActivity.class.getSimpleName();
 
 	
 	private ImageButton topBarIconButton;

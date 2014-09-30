@@ -21,7 +21,7 @@ import android.util.Log;
 
 public class PublishPathAsyncTask extends AsyncTask<Void, Void, BackflipException> {
 
-	private static final String TAG = "PublishPathAsyncTask";
+	public static final String TAG = PublishPathAsyncTask.class.getSimpleName();
 	private String photoUrl;
 	private String photoCaption;
 	private PublishCallback callback;

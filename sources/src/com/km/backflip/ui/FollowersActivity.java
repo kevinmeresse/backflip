@@ -23,7 +23,7 @@ import android.widget.ProgressBar;
 
 public class FollowersActivity extends Activity {
 
-	protected static final String TAG = "FollowersActivity";
+	public static final String TAG = FollowersActivity.class.getSimpleName();
 
 	private ListView listview;
 	

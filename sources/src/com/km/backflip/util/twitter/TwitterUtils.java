@@ -11,7 +11,7 @@ import com.parse.SaveCallback;
 
 public class TwitterUtils {
 	
-	protected static final String TAG = "PathUtils";
+	public static final String TAG = TwitterUtils.class.getSimpleName();
 	
 	public static String getMomentWebpageUrl(String momentId) {
 		return "bckflp.co/"+momentId;

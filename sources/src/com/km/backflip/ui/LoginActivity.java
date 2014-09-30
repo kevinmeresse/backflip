@@ -22,7 +22,7 @@ import com.km.backflip.R;
  */
 public class LoginActivity extends Activity {
 	
-	protected static final String TAG = "LoginActivity";
+	public static final String TAG = LoginActivity.class.getSimpleName();
 	
 	// UI references.
 	private EditText usernameView;

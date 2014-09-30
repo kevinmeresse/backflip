@@ -15,7 +15,7 @@ import android.util.Log;
 
 public class PublishTwitterAsyncTask extends AsyncTask<Void, Void, BackflipException> {
 
-	private static final String TAG = "PublishPathAsyncTask";
+	public static final String TAG = PublishTwitterAsyncTask.class.getSimpleName();
 	private String momentId;
 	private String photoCaption;
 	private PublishCallback callback;

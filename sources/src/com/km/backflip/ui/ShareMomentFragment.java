@@ -42,7 +42,7 @@ import android.widget.TextView;
 
 public class ShareMomentFragment extends Fragment {
 	
-	protected static final String TAG = "ShareMomentFragment";
+	public static final String TAG = ShareMomentFragment.class.getSimpleName();
 	protected static final int INSTANT_SHARE_REQUEST_CODE = 75;
 	protected static final int FACEBOOK_REQUEST_CODE = 76;
 	protected static final int TWITTER_REQUEST_CODE = 77;

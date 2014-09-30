@@ -1,5 +1,7 @@
 package com.km.backflip.ui;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -22,7 +24,7 @@ import com.km.backflip.R;
  */
 public class SignUpActivity extends Activity {
 	
-	protected static final String TAG = "SignUpActivity";
+	public static final String TAG = SignUpActivity.class.getSimpleName();
 	
 	// UI references.
 	private EditText usernameView;
@@ -125,9 +127,9 @@ public class SignUpActivity extends Activity {
         
 				// Set up a new Parse user
 				ParseUser newUser = new ParseUser();
-				newUser.setUsername(usernameView.getText().toString().toLowerCase());
+				newUser.setUsername(usernameView.getText().toString().toLowerCase(Locale.US));
 				newUser.setPassword(passwordView.getText().toString());
-				newUser.setEmail(emailView.getText().toString().toLowerCase());
+				newUser.setEmail(emailView.getText().toString().toLowerCase(Locale.US));
 				newUser.put("notifyFollow", true);
 				newUser.put("notifyLike", true);
 				

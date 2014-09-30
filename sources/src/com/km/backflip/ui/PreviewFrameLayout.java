@@ -27,7 +27,7 @@ import android.widget.FrameLayout;
 import com.km.backflip.R;
 
 public class PreviewFrameLayout extends ViewGroup {
-    private static final String TAG = "PreviewFrameLayout";
+    public static final String TAG = PreviewFrameLayout.class.getSimpleName();
 
     public interface OnSizeChangedListener {
         public void onSizeChanged();

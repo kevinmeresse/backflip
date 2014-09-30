@@ -10,7 +10,7 @@ import com.parse.ParseUser;
 
 public class ActivityUtils {
 
-	protected static final String TAG = "ActivityUtils";
+	public static final String TAG = ActivityUtils.class.getSimpleName();
 	
 	public static void follow(ParseUser from, ParseUser to) {
 		if (from != null && to != null) {

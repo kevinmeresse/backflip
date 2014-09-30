@@ -5,7 +5,7 @@ import com.km.backflip.util.PublishCallback;
 
 public class PathUtils {
 	
-	protected static final String TAG = "PathUtils";
+	public static final String TAG = PathUtils.class.getSimpleName();
 	
 	public static final String REDIRECT_URI = "backflip://authenticate";
 	public static final String AUTHORIZATION_URI = "https://partner.path.com/oauth2/authenticate?response_type=code&client_id=";

@@ -86,7 +86,7 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		
 		if (isFlipping) {
 			flipAdapter = new FlipAdapter(this, flipView, feedOffline, refreshAndLoadMore, feedMessage);
-			flipAdapter.setCallback(this);
+			//flipAdapter.setCallback(this);
 			flipView.setAdapter(flipAdapter);
 			flipView.setOnFlipListener(this);
 			flipView.peakNext(true);

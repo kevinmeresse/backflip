@@ -1,9 +1,5 @@
 package com.km.backflip.ui;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +10,6 @@ import com.km.backflip.R;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -43,7 +38,7 @@ import android.widget.Toast;
 
 public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
 	
-	private static final String TAG = "CameraFragment";
+	public static final String TAG = CameraFragment.class.getSimpleName();
 	
 	private static final int IDLE = 1;
     private static final int SNAPSHOT_IN_PROGRESS = 2;
@@ -107,7 +102,8 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
         discoverCameras();
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	Log.i(TAG, "onCreateView");
@@ -610,7 +606,8 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
         }
     }
     
-    private void setCameraParameters() {
+    @SuppressWarnings("deprecation")
+	private void setCameraParameters() {
     	Log.i(TAG, "setCameraParameters");
         mParameters = mCamera.getParameters();
 
@@ -718,7 +715,8 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback {
     	return optimalSize;
     }
     
-    private Size getOptimalPreviewSize(List<Size> sizes, double targetRatio) {
+    @SuppressWarnings("deprecation")
+	private Size getOptimalPreviewSize(List<Size> sizes, double targetRatio) {
     	Log.i(TAG, "getOptimalPreviewSize");
         final double ASPECT_TOLERANCE = 0.05;
         if (sizes == null) return null;

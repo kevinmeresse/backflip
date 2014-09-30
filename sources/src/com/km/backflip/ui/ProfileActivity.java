@@ -20,7 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.parse.CountCallback;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
@@ -39,7 +38,7 @@ import com.km.backflip.R;
  */
 public class ProfileActivity extends Activity {
 	
-	protected static final String TAG = "ProfileActivity";
+	public static final String TAG = ProfileActivity.class.getSimpleName();
 	
 	private ParseUser displayedUser;
 	private boolean isMyProfile = true;

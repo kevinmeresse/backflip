@@ -28,9 +28,9 @@ import android.util.Log;
 @SuppressLint("SimpleDateFormat")
 public class BitmapHelper {
 	
+	public static final String TAG = BitmapHelper.class.getSimpleName();
 	private static final String JPEG_FILE_PREFIX = "IMG_";
 	private static final String JPEG_FILE_SUFFIX = ".jpg";
-	private static final String TAG = "BitmapHelper";
 	
     // Scale and keep aspect ratio
     static public Bitmap scaleToFitWidth(Bitmap b, int width) {
@@ -100,11 +100,9 @@ public class BitmapHelper {
     }
     
     static public Bitmap mergeImages(Bitmap bm1, Bitmap bm2) {
-    	Log.d(TAG, "Back pic size: " + bm1.getWidth() + "/" + bm1.getHeight() + " - Front pic size: " + bm2.getWidth() + "/" + bm2.getHeight());
     	if (bm1 != null && bm2 != null) {
 	    	// Create array of pixels (of twice the size of each picture)
-	    	//int[] pix = new int[bm1.getWidth() * bm1.getHeight() * 2];
-    		int[] pix = new int[(bm1.getWidth() * bm1.getHeight()) + (bm2.getWidth() * bm2.getHeight())];
+	    	int[] pix = new int[(bm1.getWidth() * bm1.getHeight()) + (bm2.getWidth() * bm2.getHeight())];
 	    	// Extract pixels from 2 pictures to the array
 	    	bm1.getPixels(pix, 0, bm1.getWidth(), 0, 0, bm1.getWidth(), bm1.getHeight());
 	    	bm2.getPixels(pix, bm1.getWidth() * bm1.getHeight(), bm2.getWidth(), 0, 0, bm2.getWidth(), bm2.getHeight());

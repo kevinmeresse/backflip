@@ -1,7 +1,5 @@
 package com.km.backflip.ui;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 
 import com.crittercism.app.Crittercism;
@@ -37,7 +35,7 @@ import android.widget.TextView;
 
 public class DisplayMomentActivity extends Activity {
 	
-	protected static final String TAG = "DisplayMomentActivity";
+	public static final String TAG = DisplayMomentActivity.class.getSimpleName();
 
 	private Moment moment;
 	private ParseImageView imageBadPreview;
