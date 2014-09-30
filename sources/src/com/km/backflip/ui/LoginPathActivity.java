@@ -1,6 +1,6 @@
 package com.km.backflip.ui;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.util.BackflipException;
 import com.km.backflip.util.LoginCallback;
 import com.km.backflip.util.path.PathUtils;
@@ -43,7 +43,7 @@ public class LoginPathActivity extends Activity {
 		                    PathUtils.login(code, new LoginCallback() {
 		            			public void done(BackflipException e) {
 		            				if (e != null) {
-		            					Crittercism.logHandledException(e);
+		            					Crashlytics.logException(e);
 		            					Log.e(TAG, "Path login error: " + e.getMessage());
 		            					setResult(Activity.RESULT_CANCELED);
 		            				} else {

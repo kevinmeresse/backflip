@@ -1,5 +1,7 @@
 package com.km.backflip.ui;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -13,7 +15,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.util.Utils;
 import com.km.backflip.R;
 
@@ -85,14 +87,14 @@ public class LoginActivity extends Activity {
 				dlg.show();
 				
 				// Call the Parse login method
-				ParseUser.logInInBackground(usernameView.getText().toString().toLowerCase(), passwordView.getText().toString(), new LogInCallback() {
+				ParseUser.logInInBackground(usernameView.getText().toString().toLowerCase(Locale.US), passwordView.getText().toString(), new LogInCallback() {
 
 					@Override
 					public void done(ParseUser user, ParseException e) {
 						dlg.dismiss();
 						if (e != null) {
 							// Show the error message
-							Crittercism.logHandledException(e);
+							Crashlytics.logException(e);
 							Log.e(TAG, "Couldn't log you in: " + e.getMessage());
 							Utils.showToast(LoginActivity.this, "We couldn't log you in. Please try again...", Toast.LENGTH_LONG);
 						} else {
@@ -101,9 +103,9 @@ public class LoginActivity extends Activity {
 							installation.put("user", user);
 							installation.saveInBackground();
 							
-							// Set the username for Crittercism
+							// Set the username for Crashlytics
 							if (ParseUser.getCurrentUser() != null) {
-								Crittercism.setUsername(ParseUser.getCurrentUser().getUsername());
+								Crashlytics.setUserName(ParseUser.getCurrentUser().getUsername());
 							}
 							
 							// Return

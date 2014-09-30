@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.album.AlbumStorageDirFactory;
 import com.km.backflip.album.BaseAlbumDirFactory;
 import com.km.backflip.album.FroyoAlbumDirFactory;
@@ -252,7 +252,7 @@ public class BitmapHelper {
     		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
     		return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
     	} catch (OutOfMemoryError ex) {
-    		Crittercism.logHandledException(ex);
+    		Crashlytics.logException(ex);
     		Log.e(TAG, "Got Out Of Memory exception ", ex);
     		return null;
 		}
@@ -273,7 +273,7 @@ public class BitmapHelper {
     		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
     		return BitmapFactory.decodeByteArray(jpegData, 0, jpegData.length, options);
     	} catch (OutOfMemoryError ex) {
-    		Crittercism.logHandledException(ex);
+    		Crashlytics.logException(ex);
     		Log.e(TAG, "Got Out Of Memory exception ", ex);
     		return null;
 		}

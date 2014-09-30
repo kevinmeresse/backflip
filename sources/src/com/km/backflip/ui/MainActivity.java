@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.model.Moment;
 import com.km.backflip.ui.adapter.FlipAdapter;
 import com.km.backflip.ui.adapter.VerticalPagerAdapter;
@@ -61,9 +61,9 @@ public class MainActivity extends FragmentActivity implements FlipCallback, OnFl
 		// Track statistics with Parse
 		ParseAnalytics.trackAppOpened(getIntent());
 		
-		// Set the username for Crittercism
+		// Set the username for Crashlytics
 		if (ParseUser.getCurrentUser() != null) {
-			Crittercism.setUsername(ParseUser.getCurrentUser().getUsername());
+			Crashlytics.setUserName(ParseUser.getCurrentUser().getUsername());
 		}
 		
 		// Set the layout

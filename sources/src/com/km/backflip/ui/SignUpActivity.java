@@ -15,7 +15,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.util.Utils;
 import com.km.backflip.R;
 
@@ -150,9 +150,9 @@ public class SignUpActivity extends Activity {
 								installation.put("user", ParseUser.getCurrentUser());
 								installation.saveInBackground();
 								
-								// Set the username for Crittercism
+								// Set the username for Crashlytics
 								if (ParseUser.getCurrentUser() != null) {
-									Crittercism.setUsername(ParseUser.getCurrentUser().getUsername());
+									Crashlytics.setUserName(ParseUser.getCurrentUser().getUsername());
 								}
 								
 								// Return
@@ -163,7 +163,7 @@ public class SignUpActivity extends Activity {
 					});
 				} catch (Exception e) {
 					dlg.dismiss();
-					Crittercism.logHandledException(e);
+					Crashlytics.logException(e);
 					Log.e(TAG, "Couldn't save user data to server: " + e.getMessage());
 					Utils.showToast(SignUpActivity.this, "We couldn't sign you up. Please try again...", Toast.LENGTH_LONG);
 					e.printStackTrace();

@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.model.Like;
 import com.km.backflip.model.Moment;
 import com.km.backflip.model.Report;
@@ -232,7 +232,7 @@ public class VerticalPagerAdapter extends FragmentStatePagerAdapter {
 					            	BitmapHelper.saveImageInGallery(getActivity(), momentImage);
 					            	Utils.showToast(getActivity(), "Picture successfully saved");
 				            	} catch (Exception e) {
-				            		Crittercism.logHandledException(e);
+				            		Crashlytics.logException(e);
 									Utils.showToast(getActivity(), "Sorry, picture could not be saved...");
 									e.printStackTrace();
 				            	}

@@ -14,7 +14,7 @@ import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseTwitterUtils;
 import com.parse.PushService;
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 
 public class BackflipApplication extends Application {
 
@@ -23,9 +23,9 @@ public class BackflipApplication extends Application {
 		super.onCreate();
 		
 		/*
-		 * Crittercism intialization
+		 * Crashlytics initialization
 		 */
-		Crittercism.initialize(getApplicationContext(), "5313c676a6d3d7375c000003");
+		Crashlytics.start(this);
 
 		/*
 		 * Register all ParseObject subclasses

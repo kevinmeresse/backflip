@@ -4,7 +4,7 @@ import java.util.List;
 
 import se.emilsjolander.flipview.FlipView;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.model.Like;
 import com.km.backflip.model.Moment;
 import com.km.backflip.model.Report;
@@ -149,7 +149,7 @@ public class FlipAdapter extends BaseAdapter implements OnClickListener {
 				            	BitmapHelper.saveImageInGallery(activity, momentImage);
 				            	Utils.showToast(activity, "Picture successfully saved");
 			            	} catch (Exception e) {
-			            		Crittercism.logHandledException(e);
+			            		Crashlytics.logException(e);
 								Utils.showToast(activity, "Sorry, picture could not be saved...");
 								e.printStackTrace();
 			            	}

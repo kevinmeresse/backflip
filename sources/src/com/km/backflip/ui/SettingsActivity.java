@@ -2,7 +2,7 @@ package com.km.backflip.ui;
 
 import java.net.URISyntaxException;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.util.Utils;
 import com.km.backflip.R;
 import com.parse.ParseUser;
@@ -143,7 +143,7 @@ public class SettingsActivity extends FragmentActivity {
 			    	Intent intent = Intent.parseUri("mailto:support@backflip.cc?subject=Backflip - Report a problem", Intent.URI_INTENT_SCHEME);
 				    startActivity(intent);
 		    	} catch (URISyntaxException e) {
-		    		Crittercism.logHandledException(e);
+		    		Crashlytics.logException(e);
 		    		Utils.showToast(SettingsActivity.this, "Sorry, something went wrong...");
 		    	}
 		    }
@@ -157,7 +157,7 @@ public class SettingsActivity extends FragmentActivity {
 		        try {
 		            startActivity(goToMarket);
 		        } catch (ActivityNotFoundException e) {
-		        	Crittercism.logHandledException(e);
+		        	Crashlytics.logException(e);
 		        	Utils.showToast(SettingsActivity.this, "Couldn't launch the market...");
 		        }
 		    }

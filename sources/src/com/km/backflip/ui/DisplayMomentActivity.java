@@ -2,7 +2,7 @@ package com.km.backflip.ui;
 
 import java.util.List;
 
-import com.crittercism.app.Crittercism;
+import com.crashlytics.android.Crashlytics;
 import com.km.backflip.model.Like;
 import com.km.backflip.model.Moment;
 import com.km.backflip.model.Report;
@@ -156,7 +156,7 @@ public class DisplayMomentActivity extends Activity {
 				            	BitmapHelper.saveImageInGallery(DisplayMomentActivity.this, momentImage);
 				            	Utils.showToast(DisplayMomentActivity.this, "Picture successfully saved");
 			            	} catch (Exception e) {
-								Crittercism.logHandledException(e);
+			            		Crashlytics.logException(e);
 			            		Utils.showToast(DisplayMomentActivity.this, "Sorry, picture could not be saved...");
 			            		e.printStackTrace();
 							}
